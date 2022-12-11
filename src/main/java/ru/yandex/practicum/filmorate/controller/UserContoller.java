@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserContoller {
@@ -26,6 +28,7 @@ public class UserContoller {
             throw new UserAlreadyExistsException("User " + user + " already exists.");
         }
         users.add(user);
+        log.info("User " + user + " was added.");
         return user;
     }
 
@@ -33,6 +36,7 @@ public class UserContoller {
     public User update(@RequestBody User user) {
         validateUser(user);
         users.add(user);
+        log.info("User " + user + " was updated.");
         return user;
     }
 

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
@@ -26,6 +28,7 @@ public class FilmController {
             throw new FilmAlreadyExistsException("Film " + film + " already exists.");
         }
         films.add(film);
+        log.info("Film " + film + " was added.");
         return film;
     }
 
@@ -33,6 +36,7 @@ public class FilmController {
     public Film update(@RequestBody Film film) {
         validateFilm(film);
         films.add(film);
+        log.info("Film " + film + " was updated.");
         return film;
     }
 
