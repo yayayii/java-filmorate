@@ -1,6 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.UserAlreadyExistsException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -21,7 +23,7 @@ public class UserContoller {
     public User create(@RequestBody User user) {
         validateUser(user);
         if (users.contains(user)) {
-            throw new RuntimeException();
+            throw new UserAlreadyExistsException("User " + user + " already exists.");
         }
         users.add(user);
         return user;
@@ -36,21 +38,21 @@ public class UserContoller {
 
     private void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().isEmpty() || user.getEmail().isBlank()) {
-            throw new RuntimeException("User's email shouldn't be empty.");
+            throw new ValidationException("User's email shouldn't be empty.");
         }
         if (!user.getEmail().contains("@")) {
-            throw new RuntimeException("Wrong user's email input.");
+            throw new ValidationException("Wrong user's email input.");
         }
 
         if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().isBlank()) {
-            throw new RuntimeException("User's login shouldn't be empty.");
+            throw new ValidationException("User's login shouldn't be empty.");
         }
         if (user.getLogin().contains(" ")) {
-            throw new RuntimeException("User's login shouldn't contain spaces.");
+            throw new ValidationException("User's login shouldn't contain spaces.");
         }
 
         if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new RuntimeException("User's birthday can't be in the future.");
+            throw new ValidationException("User's birthday can't be in the future.");
         }
     }
 }
