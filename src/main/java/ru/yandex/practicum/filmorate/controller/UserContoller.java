@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserAlreadyExistsException;
+import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -25,18 +26,22 @@ public class UserContoller {
     public User create(@RequestBody User user) {
         validateUser(user);
         if (users.contains(user)) {
-            throw new UserAlreadyExistsException("User " + user + " already exists.");
+            throw new UserAlreadyExistsException("User \"" + user.getLogin() + "\" already exists.");
         }
         users.add(user);
-        log.info("User " + user + " was added.");
+        log.info("User \"" + user.getLogin() + "\" was added.");
         return user;
     }
 
     @PutMapping
     public User update(@RequestBody User user) {
         validateUser(user);
+        if (!users.contains(user)) {
+            throw new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
+        }
+        users.remove(user);
         users.add(user);
-        log.info("User " + user + " was updated.");
+        log.info("User \"" + user.getLogin() + "\" was updated.");
         return user;
     }
 
