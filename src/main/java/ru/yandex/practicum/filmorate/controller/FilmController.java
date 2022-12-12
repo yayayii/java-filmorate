@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistsException;
+import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -25,18 +26,22 @@ public class FilmController {
     public Film create(@RequestBody Film film) {
         validateFilm(film);
         if (films.contains(film)) {
-            throw new FilmAlreadyExistsException("Film " + film + " already exists.");
+            throw new FilmAlreadyExistsException("Film \"" + film.getName() + "\" already exists.");
         }
         films.add(film);
-        log.info("Film " + film + " was added.");
+        log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
 
     @PutMapping
     public Film update(@RequestBody Film film) {
         validateFilm(film);
+        if (!films.contains(film)) {
+            throw new FilmDoesntExistException("Film \"" + film.getName() + "\" doesn't exists.");
+        }
+        films.remove(film);
         films.add(film);
-        log.info("Film " + film + " was updated.");
+        log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
 
