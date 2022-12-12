@@ -13,9 +13,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>filmorate</name>
 	<description>Backend for film service</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -35,7 +37,6 @@
 			<version>1.18.24</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
