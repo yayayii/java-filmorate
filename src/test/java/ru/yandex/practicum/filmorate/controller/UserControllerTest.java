@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import ru.yandex.practicum.filmorate.FilmorateApplication;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -19,8 +19,8 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FilmControllerTest {
-    private static final String SERVER_URI = "http://localhost:8080/films";
+public class UserControllerTest {
+    private static final String SERVER_URI = "http://localhost:8080/users";
 
     private HttpClient client;
     private URI uri;
@@ -43,95 +43,103 @@ public class FilmControllerTest {
 
     //GET
     @Test
-    void shouldReturnEmptyFilmSetWhenNoFilmsWereAdded() {
+    void shouldReturnEmptyUserSetWhenNoUsersWereAdded() {
         response = getRequest();
         assertEquals("[]", response.body());
     }
 
     //POST
     @Test
-    void shouldReturnFilmSetWhenFilmWasAdded() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnUserSetWhenUserWasAdded() throws IOException {
+        User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         postRequest(writer.toString());
 
         writer = new StringWriter();
         response = getRequest();
-        mapper.writeValue(writer, Set.of(film));
+        mapper.writeValue(writer, Set.of(user));
         assertEquals(writer.toString(), response.body());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingFilmThatWasAlreadyAdded() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenAddingUserThatWasAlreadyAdded() throws IOException {
+        User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         postRequest(writer.toString());
 
         writer = new StringWriter();
-        mapper.writeValue(writer, film);
+        mapper.writeValue(writer, user);
         response = postRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingFilmWithEmptyName() throws IOException {
-        Film film = new Film(1, "", "Description", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenAddingUserWithEmptyEmail() throws IOException {
+        User user = new User(1, "", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         response = postRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingFilmWithLongDescription() throws IOException {
-        Film film = new Film(1, "Name", "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenAddingUserWithWrongEmail() throws IOException {
+        User user = new User(1, "email", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         response = postRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingFilmWithReleaseDateBefore28101985() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(1894, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenAddingUserWithEmptyLogin() throws IOException {
+        User user = new User(1, "email@", "", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         response = postRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingFilmWithNegativeDuration() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), -1);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenAddingUserWithWrongLogin() throws IOException {
+        User user = new User(1, "email@", " login ", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
+        response = postRequest(writer.toString());
+        assertEquals(500, response.statusCode());
+    }
+
+    @Test
+    void shouldReturnStatusCode500WhenAddingUserWithWrongBirthday() throws IOException {
+        User user = new User(1, "email@", "login", "name", LocalDate.of(2040, 1, 1));
+        mapper.writeValue(writer, user);
         response = postRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
 
     //PUT
     @Test
-    void shouldReturnUpdatedFilmSetWhenFilmWasUpdated() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnUpdatedUserSetWhenUserWasUpdated() throws IOException {
+        User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         postRequest(writer.toString());
 
         writer = new StringWriter();
         response = getRequest();
-        mapper.writeValue(writer, Set.of(film));
+        mapper.writeValue(writer, Set.of(user));
         assertEquals(writer.toString(), response.body());
 
-        Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120);
+        User updatedUser = new User(1, "email@", "login", "updated name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
-        mapper.writeValue(writer, updatedFilm);
+        mapper.writeValue(writer, updatedUser);
         putRequest(writer.toString());
 
         writer = new StringWriter();
         response = getRequest();
-        mapper.writeValue(writer, Set.of(updatedFilm));
+        mapper.writeValue(writer, Set.of(updatedUser));
         assertEquals(writer.toString(), response.body());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenUpdatingNonExistentFilm() throws IOException {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
-        mapper.writeValue(writer, film);
+    void shouldReturnStatusCode500WhenUpdatingNonExistentUser() throws IOException {
+        User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
+        mapper.writeValue(writer, user);
         response = putRequest(writer.toString());
         assertEquals(500, response.statusCode());
     }
@@ -147,10 +155,10 @@ public class FilmControllerTest {
         }
     }
 
-    private HttpResponse<String> postRequest(String film) {
+    private HttpResponse<String> postRequest(String user) {
         client = HttpClient.newHttpClient();
         this.uri = URI.create(SERVER_URI);
-        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(film);
+        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(user);
         request = HttpRequest.newBuilder().uri(this.uri).header("Content-Type", "application/json").POST(body).build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -159,10 +167,10 @@ public class FilmControllerTest {
         }
     }
 
-    private HttpResponse<String> putRequest(String film) {
+    private HttpResponse<String> putRequest(String user) {
         client = HttpClient.newHttpClient();
         this.uri = URI.create(SERVER_URI);
-        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(film);
+        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(user);
         request = HttpRequest.newBuilder().uri(this.uri).header("Content-Type", "application/json").PUT(body).build();
         try {
             return client.send(request, HttpResponse.BodyHandlers.ofString());

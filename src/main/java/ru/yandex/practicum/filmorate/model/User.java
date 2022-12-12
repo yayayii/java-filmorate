@@ -1,14 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
 public class User {
-    private final int id;
+    private transient final int id;
     private final String email;
     private final String login;
-    private final String name;
-    private final LocalDate birthday;
+    private transient final String name;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private transient final LocalDate birthday;
 }
