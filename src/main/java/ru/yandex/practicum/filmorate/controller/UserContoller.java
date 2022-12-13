@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.UserAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -15,6 +14,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserContoller {
+    private static int id = 0;
     private final Set<User> users = new HashSet<>();
 
     @GetMapping
@@ -25,9 +25,7 @@ public class UserContoller {
     @PostMapping
     public User create(@RequestBody User user) {
         validateUser(user);
-        if (users.contains(user)) {
-            throw new UserAlreadyExistsException("User \"" + user.getLogin() + "\" already exists.");
-        }
+        user.setId(++id);
         users.add(user);
         log.info("User \"" + user.getLogin() + "\" was added.");
         return user;
@@ -58,6 +56,10 @@ public class UserContoller {
         }
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("User's login shouldn't contain spaces.");
+        }
+
+        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
 
         if (user.getBirthday().isAfter(LocalDate.now())) {

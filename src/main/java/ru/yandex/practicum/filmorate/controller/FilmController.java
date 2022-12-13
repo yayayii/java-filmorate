@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.FilmAlreadyExistsException;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -15,6 +14,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
+    private static int id = 0;
     private final Set<Film> films = new HashSet<>();
 
     @GetMapping
@@ -25,9 +25,7 @@ public class FilmController {
     @PostMapping
     public Film create(@RequestBody Film film) {
         validateFilm(film);
-        if (films.contains(film)) {
-            throw new FilmAlreadyExistsException("Film \"" + film.getName() + "\" already exists.");
-        }
+        film.setId(++id);
         films.add(film);
         log.info("Film \"" + film.getName() + "\" was added.");
         return film;
