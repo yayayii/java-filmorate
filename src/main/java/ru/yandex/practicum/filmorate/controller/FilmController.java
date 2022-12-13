@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film create(@RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         validateFilm(film);
         film.setId(++id);
         films.add(film);
@@ -32,7 +33,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@RequestBody Film film) {
+    public Film update(@Valid @RequestBody Film film) {
         validateFilm(film);
         if (!films.contains(film)) {
             throw new FilmDoesntExistException("Film \"" + film.getName() + "\" doesn't exists.");
@@ -44,10 +45,6 @@ public class FilmController {
     }
 
     private void validateFilm(Film film) {
-        if (film.getName() == null || film.getName().isEmpty() || film.getName().isBlank()) {
-            throw new ValidationException("Film's name shouldn't be empty.");
-        }
-
         if (film.getDescription().length() > 200) {
             throw new ValidationException("Film's description shouldn't contain more than 200 symbols.");
         }

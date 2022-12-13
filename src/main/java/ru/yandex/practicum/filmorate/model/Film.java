@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @ToString
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 public class Film {
     private int id;
+    @NotNull @NotBlank
     private transient String name;
     private transient String description;
     @JsonFormat(pattern = "yyyy-MM-dd")

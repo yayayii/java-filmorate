@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class UserContoller {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         validateUser(user);
         user.setId(++id);
         users.add(user);
@@ -32,7 +33,7 @@ public class UserContoller {
     }
 
     @PutMapping
-    public User update(@RequestBody User user) {
+    public User update(@Valid @RequestBody User user) {
         validateUser(user);
         if (!users.contains(user)) {
             throw new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
@@ -44,16 +45,6 @@ public class UserContoller {
     }
 
     private void validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty() || user.getEmail().isBlank()) {
-            throw new ValidationException("User's email shouldn't be empty.");
-        }
-        if (!user.getEmail().contains("@")) {
-            throw new ValidationException("Wrong user's email input.");
-        }
-
-        if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().isBlank()) {
-            throw new ValidationException("User's login shouldn't be empty.");
-        }
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("User's login shouldn't contain spaces.");
         }
