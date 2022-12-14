@@ -3,24 +3,23 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @ToString
-@EqualsAndHashCode
 @Getter
 @Setter
 public class User {
     private int id;
-    @NotNull @NotBlank @Email
-    private transient String email;
-    @NotNull @NotBlank
-    private transient String login;
-    private transient String name;
+    @NotNull @NotBlank @NotEmpty @Email
+    private String email;
+    @NotNull @NotBlank @NotEmpty
+    private String login;
+    @NotNull @NotBlank @NotEmpty
+    private String name;
+    @Past
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private transient LocalDate birthday;
+    private LocalDate birthday;
 
     public User() {
     }
@@ -38,5 +37,20 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = birthday;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

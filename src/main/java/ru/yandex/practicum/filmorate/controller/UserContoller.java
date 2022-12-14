@@ -48,13 +48,5 @@ public class UserContoller {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("User's login shouldn't contain spaces.");
         }
-
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("User's birthday can't be in the future.");
-        }
     }
 }
