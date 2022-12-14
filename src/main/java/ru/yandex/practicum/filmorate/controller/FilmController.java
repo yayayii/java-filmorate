@@ -45,16 +45,8 @@ public class FilmController {
     }
 
     private void validateFilm(Film film) {
-        if (film.getDescription().length() > 200) {
-            throw new ValidationException("Film's description shouldn't contain more than 200 symbols.");
-        }
-
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new ValidationException("Film's release date can't be before 28.12.1895.");
-        }
-
-        if (film.getDuration() < 0) {
-            throw new ValidationException("Film's duration can't be negative.");
         }
     }
 }

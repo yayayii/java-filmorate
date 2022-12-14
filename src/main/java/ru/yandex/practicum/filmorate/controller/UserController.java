@@ -7,14 +7,13 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
-public class UserContoller {
+public class UserController {
     private static int id = 0;
     private final Set<User> users = new HashSet<>();
 
@@ -51,10 +50,6 @@ public class UserContoller {
 
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             user.setName(user.getLogin());
-        }
-
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("User's birthday can't be in the future.");
         }
     }
 }

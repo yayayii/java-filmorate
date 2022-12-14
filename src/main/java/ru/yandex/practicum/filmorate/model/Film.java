@@ -3,22 +3,22 @@ package ru.yandex.practicum.filmorate.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @ToString
-@EqualsAndHashCode
 @Getter
 @Setter
 public class Film {
     private int id;
-    @NotNull @NotBlank
-    private transient String name;
-    private transient String description;
+    @NotNull @NotBlank @NotEmpty
+    private String name;
+    @Size(max = 200)
+    private String description;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private transient LocalDate releaseDate;
-    private transient int duration;
+    private LocalDate releaseDate;
+    @PositiveOrZero
+    private int duration;
 
     public Film() {
     }
@@ -36,5 +36,20 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Film film = (Film) o;
+
+        return id == film.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }
