@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
-import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -45,6 +44,13 @@ public class FilmController {
         films.add(film);
         log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
+    }
+
+    @DeleteMapping
+    public void clear() {
+        id = 0;
+        films.clear();
+        log.info("Film set was cleared.");
     }
 
     private void validateFilm(Film film) {

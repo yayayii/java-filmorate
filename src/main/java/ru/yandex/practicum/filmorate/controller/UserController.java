@@ -45,6 +45,13 @@ public class UserController {
         return user;
     }
 
+    @DeleteMapping
+    public void clear() {
+        id = 0;
+        users.clear();
+        log.info("User set was cleared.");
+    }
+
     private void validateUser(User user) {
         if (user.getLogin().contains(" ")) {
             RuntimeException exception = new ValidationException("User's login shouldn't contain spaces.");
