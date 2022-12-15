@@ -35,7 +35,9 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         validateUser(user);
         if (!users.contains(user)) {
-            throw new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
+            RuntimeException exception = new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
+            log.warn(exception.getMessage());
+            throw exception;
         }
         users.remove(user);
         users.add(user);
@@ -45,7 +47,9 @@ public class UserController {
 
     private void validateUser(User user) {
         if (user.getLogin().contains(" ")) {
-            throw new ValidationException("User's login shouldn't contain spaces.");
+            RuntimeException exception = new ValidationException("User's login shouldn't contain spaces.");
+            log.warn(exception.getMessage());
+            throw exception;
         }
 
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
