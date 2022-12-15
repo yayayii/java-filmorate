@@ -1,185 +1,170 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
-import ru.yandex.practicum.filmorate.FilmorateApplication;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerTest {
-    private static final String SERVER_URI = "http://localhost:8080/users";
+    private static final String URN = "/users";
 
-    private HttpClient client;
-    private URI uri;
-    private HttpRequest request;
-    private HttpResponse<String> response;
     private static ObjectMapper mapper;
     private StringWriter writer;
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    private MockMvc mvc;
 
     @BeforeAll
     static void beforeAll() {
         mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
     }
-
     @BeforeEach
     void beforeEach() {
         writer = new StringWriter();
-        SpringApplication.run(FilmorateApplication.class);
+    }
+    @AfterEach
+    void afterEach() throws Exception {
+        deleteUserSetRequest();
     }
 
     //GET
     @Test
-    void shouldReturnEmptyUserSetWhenNoUsersWereAdded() {
-        response = getRequest();
-        assertEquals("[]", response.body());
+    void shouldReturnEmptyUserSetWhenNoUsersWereAdded() throws Exception {
+        assertEquals("[]", getUserSetRequest().getContentAsString());
     }
 
     //POST
     @Test
-    void shouldReturnUserSetWhenUserWasAdded() throws IOException {
+    void shouldReturnUserSetWhenUserWasAdded() throws Exception {
         User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        postRequest(writer.toString());
+        postUserRequest(writer.toString());
 
         writer = new StringWriter();
-        response = getRequest();
         user.setId(1);
         mapper.writeValue(writer, Set.of(user));
-        assertEquals(writer.toString(), response.body());
+        assertEquals(writer.toString(), getUserSetRequest().getContentAsString());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithEmptyEmail() throws IOException {
+    void shouldReturnStatusCode400WhenAddingUserWithEmptyEmail() throws Exception {
         User user = new User("", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        response = postRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongEmail() throws IOException {
+    void shouldReturnStatusCode400WhenAddingUserWithWrongEmail() throws Exception {
         User user = new User("email", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        response = postRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithEmptyLogin() throws IOException {
+    void shouldReturnStatusCode400WhenAddingUserWithEmptyLogin() throws Exception {
         User user = new User("email@qwe.ru", "", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        response = postRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongLogin() throws IOException {
+    void shouldReturnStatusCode400WhenAddingUserWithWrongLogin() throws Exception {
         User user = new User("email@", " login ", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        response = postRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnUserSetWithUserNameEqualsToHisLoginWhenAddingUserWithEmptyName() throws IOException {
+    void shouldReturnUserSetWithUserNameEqualsToHisLoginWhenAddingUserWithEmptyName() throws Exception {
         User user = new User("email@qwe.ru", "login", "", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        postRequest(writer.toString());
+        postUserRequest(writer.toString());
 
         writer = new StringWriter();
-        response = getRequest();
         user.setId(1);
         user.setName(user.getLogin());
         mapper.writeValue(writer, Set.of(user));
-        assertEquals(writer.toString(), response.body());
+        assertEquals(writer.toString(), getUserSetRequest().getContentAsString());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongBirthday() throws IOException {
+    void shouldReturnStatusCode400WhenAddingUserWithWrongBirthday() throws Exception {
         User user = new User("email@", "login", "name", LocalDate.of(2040, 1, 1));
         mapper.writeValue(writer, user);
-        response = postRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, postUserRequest(writer.toString()).getStatus());
     }
 
     //PUT
     @Test
-    void shouldReturnUpdatedUserSetWhenUserWasUpdated() throws IOException {
+    void shouldReturnUpdatedUserSetWhenUserWasUpdated() throws Exception {
         User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        postRequest(writer.toString());
+        postUserRequest(writer.toString());
 
         writer = new StringWriter();
-        response = getRequest();
         user.setId(1);
         mapper.writeValue(writer, Set.of(user));
-        assertEquals(writer.toString(), response.body());
+        assertEquals(writer.toString(), getUserSetRequest().getContentAsString());
 
         User updatedUser = new User(1, "email@qwe.ru", "login", "updated name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, updatedUser);
-        putRequest(writer.toString());
+        putUserRequest(writer.toString());
 
         writer = new StringWriter();
-        response = getRequest();
         mapper.writeValue(writer, Set.of(updatedUser));
-        assertEquals(writer.toString(), response.body());
+        assertEquals(writer.toString(), getUserSetRequest().getContentAsString());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenUpdatingNonExistentUser() throws IOException {
+    void shouldReturnStatusCode400WhenUpdatingNonExistentUser() throws Exception {
         User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        response = putRequest(writer.toString());
-        assertEquals(400, response.statusCode());
+        assertEquals(400, putUserRequest(writer.toString()).getStatus());
     }
 
-    private HttpResponse<String> getRequest() {
-        client = HttpClient.newHttpClient();
-        this.uri = URI.create(SERVER_URI);
-        request = HttpRequest.newBuilder().uri(this.uri).GET().build();
-        try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    //sending requests
+    private MockHttpServletResponse getUserSetRequest() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.get(URN);
+        MvcResult result = mvc.perform(request).andReturn();
+        return result.getResponse();
     }
-
-    private HttpResponse<String> postRequest(String user) {
-        client = HttpClient.newHttpClient();
-        this.uri = URI.create(SERVER_URI);
-        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(user);
-        request = HttpRequest.newBuilder().uri(this.uri).header("Content-Type", "application/json").POST(body).build();
-        try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException();
-        }
+    private MockHttpServletResponse postUserRequest(String user) throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.post(URN).
+                contentType(MediaType.APPLICATION_JSON).content(user);
+        MvcResult result = mvc.perform(request).andReturn();
+        return result.getResponse();
     }
-
-    private HttpResponse<String> putRequest(String user) {
-        client = HttpClient.newHttpClient();
-        this.uri = URI.create(SERVER_URI);
-        HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(user);
-        request = HttpRequest.newBuilder().uri(this.uri).header("Content-Type", "application/json").PUT(body).build();
-        try {
-            return client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException();
-        }
+    private MockHttpServletResponse putUserRequest(String user) throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.put(URN).
+                contentType(MediaType.APPLICATION_JSON).content(user);
+        MvcResult result = mvc.perform(request).andReturn();
+        return result.getResponse();
+    }
+    private MockHttpServletResponse deleteUserSetRequest() throws Exception {
+        RequestBuilder request = MockMvcRequestBuilders.delete(URN);
+        MvcResult result = mvc.perform(request).andReturn();
+        return result.getResponse();
     }
 }
