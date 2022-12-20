@@ -5,47 +5,51 @@ import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class InMemoryUserStorage implements UserStorage {
     private static int id = 0;
-    private final Set<User> users = new HashSet<>();
+    private final Map<Integer, User> users;
+
+    public InMemoryUserStorage() {
+        users = new HashMap<>();
+    }
 
     @Override
-    public Set<User> getUsers() {
-        return users;
+    public Collection<User> getUsers() {
+        return users.values();
     }
 
     @Override
     public User addUser(User user) {
         validateUser(user);
         user.setId(++id);
-        users.add(user);
+        users.put(id, user);
         log.info("User \"" + user.getLogin() + "\" was added.");
         return user;
     }
 
     @Override
     public User updateUser(User user) {
+        int userId = user.getId();
+
         validateUser(user);
-        if (!users.contains(user)) {
+        if (!users.containsKey(userId)) {
             RuntimeException exception = new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
-        users.remove(user);
-        users.add(user);
+        users.put(userId, user);
         log.info("User \"" + user.getLogin() + "\" was updated.");
         return user;
     }
 
     @Override
-    public void clearUserCollection() {
+    public void clearUserStorage() {
         id = 0;
         users.clear();
-        log.info("User set was cleared.");
+        log.info("User storage was cleared.");
     }
 
     private void validateUser(User user) {

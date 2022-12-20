@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/users")
@@ -18,22 +18,22 @@ public class UserController {
     }
 
     @GetMapping
-    public Set<User> getUsers() {
+    public Collection<User> getUsers() {
         return userStorage.getUsers();
     }
 
     @PostMapping
-    public User create(@Valid @RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) {
         return userStorage.addUser(user);
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         return userStorage.updateUser(user);
     }
 
     @DeleteMapping
-    public void clear() {
-        userStorage.clearUserCollection();
+    public void clearUserStorage() {
+        userStorage.clearUserStorage();
     }
 }

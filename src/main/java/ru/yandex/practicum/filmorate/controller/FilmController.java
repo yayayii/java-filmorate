@@ -6,7 +6,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import javax.validation.Valid;
-import java.util.Set;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/films")
@@ -18,7 +18,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public Set<Film> getFilms() {
+    public Collection<Film> getFilms() {
         return filmStorage.getFilms();
     }
 
@@ -28,12 +28,12 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         return filmStorage.updateFilm(film);
     }
 
     @DeleteMapping
-    public void clearFilmCollection() {
-        filmStorage.clearFilmCollection();
+    public void clearFilmStorage() {
+        filmStorage.clearFilmStorage();
     }
 }

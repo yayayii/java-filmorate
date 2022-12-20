@@ -6,48 +6,54 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private static int id = 0;
 
-    private final Set<Film> films = new HashSet<>();
+    private final Map<Integer, Film> films;
+
+    public InMemoryFilmStorage() {
+        films = new HashMap<>();
+    }
 
     @Override
-    public Set<Film> getFilms() {
-        return films;
+    public Collection<Film> getFilms() {
+        return films.values();
     }
 
     @Override
     public Film addFilm(Film film) {
         validateFilm(film);
         film.setId(++id);
-        films.add(film);
+        films.put(id, film);
         log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
+        int filmId = film.getId();
+
         validateFilm(film);
-        if (!films.contains(film)) {
+        if (!films.containsKey(filmId)) {
             RuntimeException exception = new FilmDoesntExistException("Film \"" + film.getName() + "\" doesn't exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
-        films.remove(film);
-        films.add(film);
+        films.put(filmId, film);
         log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
 
     @Override
-    public void clearFilmCollection() {
+    public void clearFilmStorage() {
         id = 0;
         films.clear();
-        log.info("Film set was cleared.");
+        log.info("Film storage was cleared.");
     }
 
     private void validateFilm(Film film) {
