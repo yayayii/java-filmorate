@@ -50,6 +50,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public Film getFilm(int id) {
+        return films.get(id);
+    }
+
+    @Override
     public void clearFilmStorage() {
         id = 0;
         films.clear();

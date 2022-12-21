@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserService {
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
 
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
@@ -26,12 +26,12 @@ public class UserService {
 
     public Set<User> getFriends(int userId) {
         return userStorage.getUser(userId).getFriendsIds()
-                .stream().map(id -> userStorage.getUser(id)).collect(Collectors.toSet());
+                .stream().map(userStorage::getUser).collect(Collectors.toSet());
     }
 
     public Set<User> getMutualFriends(int userId, int anotherUserId) {
         Set<Integer> mutualFriendsIds = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
         mutualFriendsIds.retainAll(userStorage.getUser(anotherUserId).getFriendsIds());
-        return mutualFriendsIds.stream().map(id -> userStorage.getUser(id)).collect(Collectors.toSet());
+        return mutualFriendsIds.stream().map(userStorage::getUser).collect(Collectors.toSet());
     }
 }
