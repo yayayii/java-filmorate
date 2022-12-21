@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
@@ -21,6 +22,7 @@ public class FilmController {
         this.filmService = filmService;
     }
 
+    //storage mapping
     @GetMapping
     public Collection<Film> getFilms() {
         return filmStorage.getFilms();
@@ -39,5 +41,21 @@ public class FilmController {
     @DeleteMapping
     public void clearFilmStorage() {
         filmStorage.clearFilmStorage();
+    }
+
+    //service mapping
+    @GetMapping("/popular")
+    public Set<Film> getPopularFilms(@RequestParam int count) {
+        return filmService.getPopularFilms(count);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void removeLike(@PathVariable int id, @PathVariable int userId) {
+        filmService.removeLike(id, userId);
     }
 }
