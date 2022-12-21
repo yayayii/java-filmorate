@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.*;
@@ -15,13 +13,12 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
 
     @Override
-    public Collection<User> getUsers() {
-        return users.values();
+    public Map<Integer, User> getUsers() {
+        return users;
     }
 
     @Override
     public User addUser(User user) {
-        validateUser(user);
         user.setId(++id);
         users.put(id, user);
         log.info("User \"" + user.getLogin() + "\" was added.");
@@ -30,27 +27,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        int userId = user.getId();
-
-        validateUser(user);
-        validateId(id);
-        users.put(userId, user);
+        users.put(user.getId(), user);
         log.info("User \"" + user.getLogin() + "\" was updated.");
         return user;
     }
 
     @Override
     public User getUser(int id) {
-        validateId(id);
         return users.get(id);
-    }
-
-    @Override
-    public void validateId(int id) {
-        if (!users.containsKey(id)) {
-            RuntimeException exception = new UserDoesntExistException("User with id=" + id + " doesn't exists.");
-            throw exception;
-        }
     }
 
     @Override
@@ -58,17 +42,5 @@ public class InMemoryUserStorage implements UserStorage {
         id = 0;
         users.clear();
         log.info("User storage was cleared.");
-    }
-
-    private void validateUser(User user) {
-        if (user.getLogin().contains(" ")) {
-            RuntimeException exception = new ValidationException("User's login shouldn't contain spaces.");
-            log.warn(exception.getMessage());
-            throw exception;
-        }
-
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
     }
 }
