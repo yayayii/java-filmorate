@@ -9,5 +9,6 @@ public interface UserStorage {
     User addUser(User user);
     User updateUser(User user);
     User getUser(int id);
+    void validateId(int id);
     void clearUserStorage();
 }

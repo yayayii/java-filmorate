@@ -19,23 +19,37 @@ public class UserService {
     }
 
     public void addFriend(int userId, int friendId) {
+        checkIds(userId, friendId);
+
         userStorage.getUser(userId).getFriendsIds().add(friendId);
         userStorage.getUser(friendId).getFriendsIds().add(userId);
     }
 
     public void deleteFriend(int userId, int friendId) {
+        checkIds(userId, friendId);
+
         userStorage.getUser(userId).getFriendsIds().remove(friendId);
         userStorage.getUser(friendId).getFriendsIds().remove(userId);
     }
 
     public Set<User> getFriends(int userId) {
+        checkIds(userId);
+
         return userStorage.getUser(userId).getFriendsIds()
                 .stream().map(userStorage::getUser).collect(Collectors.toSet());
     }
 
     public Set<User> getMutualFriends(int userId, int anotherUserId) {
+        checkIds(userId, anotherUserId);
+
         Set<Integer> mutualFriendsIds = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
         mutualFriendsIds.retainAll(userStorage.getUser(anotherUserId).getFriendsIds());
         return mutualFriendsIds.stream().map(userStorage::getUser).collect(Collectors.toSet());
+    }
+
+    private void checkIds(int... ids) {
+        for (int id : ids) {
+            userStorage.validateId(id);
+        }
     }
 }

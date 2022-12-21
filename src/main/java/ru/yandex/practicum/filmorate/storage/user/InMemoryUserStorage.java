@@ -33,11 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
         int userId = user.getId();
 
         validateUser(user);
-        if (!users.containsKey(userId)) {
-            RuntimeException exception = new UserDoesntExistException("User \"" + user.getLogin() + "\" doesn't exists.");
-            log.warn(exception.getMessage());
-            throw exception;
-        }
+        validateId(id);
         users.put(userId, user);
         log.info("User \"" + user.getLogin() + "\" was updated.");
         return user;
@@ -45,8 +41,16 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(int id) {
-        //EXCEPTION
+        validateId(id);
         return users.get(id);
+    }
+
+    @Override
+    public void validateId(int id) {
+        if (!users.containsKey(id)) {
+            RuntimeException exception = new UserDoesntExistException("User with id=" + id + " doesn't exists.");
+            throw exception;
+        }
     }
 
     @Override
