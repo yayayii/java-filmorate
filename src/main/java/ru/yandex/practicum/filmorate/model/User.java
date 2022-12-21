@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @ToString
 @Getter
@@ -19,6 +20,7 @@ public class User {
     @Past
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+    private Set<Integer> friendsIds;
 
     public User() {
     }
