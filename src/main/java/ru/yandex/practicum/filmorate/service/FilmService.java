@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -28,7 +27,14 @@ public class FilmService {
     }
 
     public Set<Film> getPopularFilms(int count) {
-        return new TreeSet<Film>(Comparator.comparingInt(o -> o.getLikedUsersIds().size()))
-                .stream().limit(count).collect(Collectors.toSet());
+        Set<Film> popularFilms = new TreeSet<>((o1, o2) -> {
+            if (o1.getLikedUsersIds().size() > o2.getLikedUsersIds().size()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
+        popularFilms.addAll(filmStorage.getFilms().values());
+        return popularFilms.stream().limit(count).collect(Collectors.toSet());
     }
 }

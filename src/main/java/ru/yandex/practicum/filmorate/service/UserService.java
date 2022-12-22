@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,13 +31,18 @@ public class UserService {
     }
 
     public Set<User> getFriends(int userId) {
-        return userStorage.getUser(userId).getFriendsIds()
+        Set<User> friends = userStorage.getUser(userId).getFriendsIds()
                 .stream().map(userStorage::getUser).collect(Collectors.toSet());
+        Set<User> sortedFriends = new TreeSet<>(Comparator.comparingInt(User::getId));
+        sortedFriends.addAll(friends);
+        return sortedFriends;
     }
 
     public Set<User> getMutualFriends(int userId, int anotherUserId) {
-        Set<Integer> mutualFriendsIds = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
-        mutualFriendsIds.retainAll(userStorage.getUser(anotherUserId).getFriendsIds());
-        return mutualFriendsIds.stream().map(userStorage::getUser).collect(Collectors.toSet());
+        Set<Integer> mutualFriends = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
+        mutualFriends.retainAll(userStorage.getUser(anotherUserId).getFriendsIds());
+        Set<User> sortedMutualFriends = new TreeSet<>(Comparator.comparingInt(User::getId));
+        sortedMutualFriends.addAll(mutualFriends.stream().map(userStorage::getUser).collect(Collectors.toSet()));
+        return sortedMutualFriends;
     }
 }
