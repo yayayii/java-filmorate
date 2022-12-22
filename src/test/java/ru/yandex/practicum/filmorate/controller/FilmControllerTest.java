@@ -70,31 +70,31 @@ public class FilmControllerTest {
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingFilmWithEmptyName() throws Exception {
+    void shouldReturnStatusCode500WhenAddingFilmWithEmptyName() throws Exception {
         Film film = new Film("", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
-        assertEquals(400, postFilmRequest(writer.toString()).getStatus());
+        assertEquals(500, postFilmRequest(writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode500WhenAddingFilmWithLongDescription() throws Exception {
         Film film = new Film("Name", "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
-        assertEquals(400, postFilmRequest(writer.toString()).getStatus());
+        assertEquals(500, postFilmRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shoulThrowNestedServletExceptionWhenAddingFilmWithReleaseDateBefore28_10_1985() throws Exception {
+    void shouldReturnStatusCode400WhenAddingFilmWithReleaseDateBefore28_10_1985() throws Exception {
         Film film = new Film("Name", "Description", LocalDate.of(1894, 1, 1), 120);
         mapper.writeValue(writer, film);
-        assertThrows(NestedServletException.class, () -> postFilmRequest(writer.toString()));
+        assertEquals(400, postFilmRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingFilmWithNegativeDuration() throws Exception {
+    void shouldReturnStatusCode500WhenAddingFilmWithNegativeDuration() throws Exception {
         Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), -1);
         mapper.writeValue(writer, film);
-        assertEquals(400, postFilmRequest(writer.toString()).getStatus());
+        assertEquals(500, postFilmRequest(writer.toString()).getStatus());
     }
 
     //PUT
@@ -120,10 +120,10 @@ public class FilmControllerTest {
     }
 
     @Test
-    void shouldThrowNestedServletExceptionWhenUpdatingNonExistentFilm() throws Exception {
+    void shouldReturnStatusCode404WhenUpdatingNonExistentFilm() throws Exception {
         Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
-        assertThrows(NestedServletException.class, () -> putFilmRequest(writer.toString()));
+        assertEquals(404, putFilmRequest(writer.toString()).getStatus());
     }
 
     //sending requests

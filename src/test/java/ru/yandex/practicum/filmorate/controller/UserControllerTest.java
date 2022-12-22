@@ -68,31 +68,31 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithEmptyEmail() throws Exception {
+    void shouldReturnStatusCode500WhenAddingUserWithEmptyEmail() throws Exception {
         User user = new User("", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, postUserRequest(writer.toString()).getStatus());
+        assertEquals(500, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongEmail() throws Exception {
+    void shouldReturnStatusCode500WhenAddingUserWithWrongEmail() throws Exception {
         User user = new User("email", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, postUserRequest(writer.toString()).getStatus());
+        assertEquals(500, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithEmptyLogin() throws Exception {
+    void shouldReturnStatusCode500WhenAddingUserWithEmptyLogin() throws Exception {
         User user = new User("email@qwe.ru", "", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, postUserRequest(writer.toString()).getStatus());
+        assertEquals(500, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongLogin() throws Exception {
+    void shouldReturnStatusCode500WhenAddingUserWithWrongLogin() throws Exception {
         User user = new User("email@", " login ", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, postUserRequest(writer.toString()).getStatus());
+        assertEquals(500, postUserRequest(writer.toString()).getStatus());
     }
 
     @Test
@@ -109,10 +109,10 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldReturnStatusCode400WhenAddingUserWithWrongBirthday() throws Exception {
+    void shouldReturnStatusCode500WhenAddingUserWithWrongBirthday() throws Exception {
         User user = new User("email@", "login", "name", LocalDate.of(2040, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, postUserRequest(writer.toString()).getStatus());
+        assertEquals(500, postUserRequest(writer.toString()).getStatus());
     }
 
     //PUT
@@ -138,10 +138,10 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldReturnStatusCode400WhenUpdatingNonExistentUser() throws Exception {
+    void shouldReturnStatusCode500WhenUpdatingNonExistentUser() throws Exception {
         User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
-        assertEquals(400, putUserRequest(writer.toString()).getStatus());
+        assertEquals(500, putUserRequest(writer.toString()).getStatus());
     }
 
     //sending requests
