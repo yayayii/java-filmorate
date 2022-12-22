@@ -28,7 +28,13 @@ public class UserController {
     //storage mapping
     @GetMapping
     public Collection<User> getUsers() {
-        return userStorage.getUsers();
+        return userStorage.getUsers().values();
+    }
+
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        userValidator.validateUserIds(id);
+        return userStorage.getUser(id);
     }
 
     @PostMapping
@@ -39,6 +45,7 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
+        userValidator.validateUserIds(user.getId());
         userValidator.validateUserLogin(user);
         return userStorage.updateUser(user);
     }

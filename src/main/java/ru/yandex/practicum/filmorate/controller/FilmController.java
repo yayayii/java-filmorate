@@ -34,6 +34,12 @@ public class FilmController {
         return filmStorage.getFilms().values();
     }
 
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable int id) {
+        filmValidator.validateFilmIds(id);
+        return filmStorage.getFilm(id);
+    }
+
     @PostMapping
     public Film addFilm(@Valid @RequestBody Film film) {
         filmValidator.validateFilmDate(film);
@@ -42,6 +48,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
+        filmValidator.validateFilmIds(film.getId());
         filmValidator.validateFilmDate(film);
         return filmStorage.updateFilm(film);
     }

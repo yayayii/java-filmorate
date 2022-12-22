@@ -39,7 +39,7 @@ public class FilmValidator {
     }
 
     public void validateFilmsCount(int count) {
-        if (count < 10) {
+        if (count < 1) {
             RuntimeException exception = new IllegalArgumentException("Films count should be positive.");
             log.warn(exception.getMessage());
             throw exception;
