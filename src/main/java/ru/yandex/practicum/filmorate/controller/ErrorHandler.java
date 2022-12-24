@@ -20,6 +20,14 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserDoesntExistException(final UserDoesntExistException e) {
         return new ErrorResponse(
@@ -30,14 +38,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleFilmDoesntExistException(final FilmDoesntExistException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleIllegalArgumentException(final IllegalArgumentException e) {
         return new ErrorResponse(
                 e.getMessage()
         );

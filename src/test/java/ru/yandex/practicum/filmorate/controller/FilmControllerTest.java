@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.util.NestedServletException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.io.StringWriter;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @AutoConfigureMockMvc
