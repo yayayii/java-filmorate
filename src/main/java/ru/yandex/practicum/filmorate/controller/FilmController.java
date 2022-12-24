@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.validation.FilmValidator;
 import ru.yandex.practicum.filmorate.validation.UserValidator;
 
@@ -58,7 +57,7 @@ public class FilmController {
         filmService.clearFilmStorage();
     }
 
-    //service mapping
+    //likes mapping
     @GetMapping("/popular")
     public Set<Film> getPopularFilms(
             @RequestParam(defaultValue = "10", required = false) int count) {

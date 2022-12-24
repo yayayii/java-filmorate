@@ -19,7 +19,7 @@ public class User {
     @Past
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
-    private final Set<Integer> friendsIds = new HashSet<>();
+    private Set<Integer> friendsIds = new HashSet<>();
 
     public User() {
     }

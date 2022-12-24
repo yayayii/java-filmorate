@@ -58,7 +58,7 @@ public class UserController {
         userStorage.clearUserStorage();
     }
 
-    //service mapping
+    //friends mapping
     @GetMapping("/{id}/friends")
     public Set<User> getFriends(@PathVariable int id) {
         userValidator.validateUserIds(id);
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getFriends(@PathVariable int id, @PathVariable int otherId) {
+    public Set<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId) {
         userValidator.validateUserIds(id, otherId);
         return userService.getMutualFriends(id, otherId);
     }
