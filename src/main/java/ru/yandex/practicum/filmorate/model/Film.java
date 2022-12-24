@@ -8,9 +8,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@ToString
-@Getter
-@Setter
+@Data
 public class Film {
     private int id;
     @NotNull @NotBlank @NotEmpty

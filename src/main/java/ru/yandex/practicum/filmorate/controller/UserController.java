@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -11,19 +11,13 @@ import javax.validation.Valid;
 import java.util.Collection;
 import java.util.Set;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
 public class UserController {
     private final UserStorage userStorage;
     private final UserService userService;
     private final UserValidator userValidator;
-
-    @Autowired
-    public UserController(UserStorage userStorage, UserService userService, UserValidator userValidator) {
-        this.userStorage = userStorage;
-        this.userService = userService;
-        this.userValidator = userValidator;
-    }
 
     //storage mapping
     @GetMapping
