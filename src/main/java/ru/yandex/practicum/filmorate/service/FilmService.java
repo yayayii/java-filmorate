@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
 
+    //storage
     public Map<Integer, Film> getFilms() {
         return filmStorage.getFilms();
     }
@@ -35,6 +36,7 @@ public class FilmService {
         filmStorage.clearFilmStorage();
     }
 
+    //likes
     public void addLike(int filmId, int userId) {
         filmStorage.getFilm(filmId).getLikedUsersIds().add(userId);
     }

@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -16,6 +13,28 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserStorage userStorage;
 
+    //storage
+    public Map<Integer, User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User addUser(User user) {
+        return userStorage.addUser(user);
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public User getUser(int id) {
+        return userStorage.getUser(id);
+    }
+
+    public void clearUserStorage() {
+        userStorage.clearUserStorage();
+    }
+
+    //friends
     public void addFriend(int userId, int friendId) {
         userStorage.getUser(userId).getFriendsIds().add(friendId);
         userStorage.getUser(friendId).getFriendsIds().add(userId);

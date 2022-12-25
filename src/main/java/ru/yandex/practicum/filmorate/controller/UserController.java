@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.validation.UserValidator;
 
 import javax.validation.Valid;
@@ -18,20 +17,19 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserStorage userStorage;
     private final UserService userService;
     private final UserValidator userValidator;
 
     //storage mapping
     @GetMapping
     public Collection<User> getUsers() {
-        return userStorage.getUsers().values();
+        return userService.getUsers().values();
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
         userValidator.validateUserIds(id);
-        User user = userStorage.getUser(id);
+        User user = userService.getUser(id);
         if (user == null) {
             RuntimeException exception = new UserDoesntExistException("User with id=" + id + " doesn't exists.");
             log.warn(exception.getMessage());
@@ -43,19 +41,19 @@ public class UserController {
     @PostMapping
     public User addUser(@Valid @RequestBody User user) {
         userValidator.validateUserLogin(user);
-        return userStorage.addUser(user);
+        return userService.addUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         userValidator.validateUserIds(user.getId());
         userValidator.validateUserLogin(user);
-        return userStorage.updateUser(user);
+        return userService.updateUser(user);
     }
 
     @DeleteMapping
     public void clearUserStorage() {
-        userStorage.clearUserStorage();
+        userService.clearUserStorage();
     }
 
     //friends mapping
