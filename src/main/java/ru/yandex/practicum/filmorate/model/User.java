@@ -5,10 +5,10 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@ToString
-@Getter
-@Setter
+@Data
 public class User {
     private int id;
     @NotNull @NotBlank @NotEmpty @Email
@@ -19,6 +19,7 @@ public class User {
     @Past
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
+    private Set<Integer> friendsIds = new HashSet<>();
 
     public User() {
     }

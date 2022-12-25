@@ -5,10 +5,10 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
-@ToString
-@Getter
-@Setter
+@Data
 public class Film {
     private int id;
     @NotNull @NotBlank @NotEmpty
@@ -19,6 +19,7 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero
     private int duration;
+    private Set<Integer> likedUsersIds = new HashSet<>();
 
     public Film() {
     }
