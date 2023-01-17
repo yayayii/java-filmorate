@@ -29,37 +29,21 @@ selecting common friends with other user:
 	FROM (
 		SELECT f1.user_id
 		FROM friend AS f1
-		JOIN friend AS f2
-		ON f1.user_id = f2.other_user_id
-		AND f2.user_id = f1.other_user_id
-		AND f1.user_id < f1.other_user_id
 		WHERE f1.other_user_id = 1
 		UNION
 		SELECT f1.other_user_id
 		FROM friend AS f1
-		JOIN friend AS f2
-		ON f1.user_id = f2.other_user_id
-		AND f2.user_id = f1.other_user_id
-		AND f1.user_id < f1.other_user_id
 		WHERE f1.user_id = 1
 	) AS user_friend
 	JOIN (
 		SELECT f1.user_id
-		FROM friend as f1
-		JOIN friend as f2
-		ON f1.user_id = f2.other_user_id
-		AND f2.user_id = f1.other_user_id
-		AND f1.user_id < f1.other_user_id
+		FROM friend AS f1
 		WHERE f1.other_user_id = 4
 		UNION
 		SELECT f1.other_user_id
 		FROM friend AS f1
-		JOIN friend AS f2
-		ON f1.user_id = f2.other_user_id
-		AND f2.user_id = f1.other_user_id
-		AND f1.user_id < f1.other_user_id
 		WHERE f1.user_id = 4
 	) AS other_user_friend
 	ON user_friend.user_id = other_user_friend.user_id
 	JOIN "user" AS u
-	ON u.id = user_friend.user_Id;
+	ON u.id = user_friend.user_id;
