@@ -1,7 +1,7 @@
 # java-filmorate
 Template repository for Filmorate project.
 
-![Database diagram](/diagram.jpg)
+![Database diagram](/Untitled.png)
 
 selecting all films:
 
