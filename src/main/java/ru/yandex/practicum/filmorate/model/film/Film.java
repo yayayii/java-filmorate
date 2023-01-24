@@ -1,13 +1,16 @@
-package ru.yandex.practicum.filmorate.model;
+package ru.yandex.practicum.filmorate.model.film;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
+@Slf4j
 @Data
 public class Film {
     private int id;
@@ -20,7 +23,13 @@ public class Film {
     @PositiveOrZero
     private int duration;
     private Mpa mpa;
-    private Set<Genre> genres = new HashSet<>();
+    private TreeSet<Genre> genres = new TreeSet<>(((o1, o2) -> {
+        if (o1.getId() < o2.getId()) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }));
 
     private Set<Integer> likedUsersIds = new HashSet<>();
 
@@ -33,7 +42,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genres = genres;
+        this.genres.addAll(genres);
     }
 
     public Film(int id, String name, String description, LocalDate releaseDate, int duration, Mpa mpa, Set<Genre> genres) {
@@ -43,7 +52,7 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-        this.genres = genres;
+        this.genres.addAll(genres);
     }
 
     @Override

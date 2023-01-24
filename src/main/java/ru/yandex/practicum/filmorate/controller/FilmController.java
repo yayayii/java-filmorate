@@ -4,7 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.exception.GenreDoesntExistsException;
+import ru.yandex.practicum.filmorate.exception.MpaDoesntExistsException;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.validation.FilmValidator;
 import ru.yandex.practicum.filmorate.validation.UserValidator;
@@ -84,4 +88,46 @@ public class FilmController {
         userValidator.validateUserIds(userId);
         filmService.removeLike(id, userId);
     }
+
+    //mpa
+    //create
+    //read
+    @GetMapping("/mpa/{id}")
+    public Mpa getMpa(@PathVariable int id) {
+        Mpa mpa = filmService.getMpa(id);
+        if (mpa == null) {
+            RuntimeException exception = new MpaDoesntExistsException("Mpa with id=" + id + " doesn't exists.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
+        return mpa;
+    }
+
+    @GetMapping("/mpa")
+    public Mpa[] getMpas() {
+        return filmService.getMpas();
+    }
+    //update
+    //delete
+
+    //genre
+    //create
+    //read
+    @GetMapping("/genres/{id}")
+    public Genre getGenre(@PathVariable int id) {
+        Genre genre = filmService.getGenre(id);
+        if (genre == null) {
+            RuntimeException exception = new GenreDoesntExistsException("Genre with id=" + id + " doesn't exists.");
+            log.warn(exception.getMessage());
+            throw exception;
+        }
+        return genre;
+    }
+
+    @GetMapping("/genres")
+    public Genre[] getGenres() {
+        return filmService.getGenres();
+    }
+    //update
+    //delete
 }
