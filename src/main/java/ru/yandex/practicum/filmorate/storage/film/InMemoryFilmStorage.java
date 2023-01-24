@@ -13,11 +13,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private static int id = 0;
     private final Map<Integer, Film> films = new HashMap<>();
 
-    @Override
-    public Map<Integer, Film> getFilms() {
-        return films;
-    }
-
+    //create
     @Override
     public Film addFilm(Film film) {
         film.setId(++id);
@@ -25,19 +21,24 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
+    //read
+    @Override
+    public Film getFilm(int id) {
+        return films.get(id);
+    }
 
+    @Override
+    public Map<Integer, Film> getFilms() {
+        return films;
+    }
+    //update
     @Override
     public Film updateFilm(Film film) {
         films.put(film.getId(), film);
         log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
-
-    @Override
-    public Film getFilm(int id) {
-        return films.get(id);
-    }
-
+    //delete
     @Override
     public void clearFilmStorage() {
         id = 0;

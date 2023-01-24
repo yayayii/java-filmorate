@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
@@ -14,21 +14,22 @@ import java.util.Collection;
 import java.util.Set;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
-@RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
     private final FilmValidator filmValidator;
     private final UserValidator userValidator;
 
-    //storage mapping
-    @GetMapping
-    public Collection<Film> getFilms() {
-        return filmService.getFilms().values();
+    //films
+    //create
+    @PostMapping("/films")
+    public Film addFilm(@Valid @RequestBody Film film) {
+        filmValidator.validateFilmDate(film);
+        return filmService.addFilm(film);
     }
-
-    @GetMapping("/{id}")
+    //read
+    @GetMapping("/films/{id}")
     public Film getFilm(@PathVariable int id) {
         Film film = filmService.getFilm(id);
         if (film == null) {
@@ -39,26 +40,12 @@ public class FilmController {
         return film;
     }
 
-    @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film) {
-        filmValidator.validateFilmDate(film);
-        return filmService.addFilm(film);
+    @GetMapping("/films")
+    public Collection<Film> getFilms() {
+        return filmService.getFilms().values();
     }
 
-    @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        filmValidator.validateFilmIds(film.getId());
-        filmValidator.validateFilmDate(film);
-        return filmService.updateFilm(film);
-    }
-
-    @DeleteMapping
-    public void clearFilmStorage() {
-        filmService.clearFilmStorage();
-    }
-
-    //likes mapping
-    @GetMapping("/popular")
+    @GetMapping("/films/popular")
     public Set<Film> getPopularFilms(
             @RequestParam(defaultValue = "10", required = false) int count) {
         filmValidator.validateFilmsCount(count);
@@ -67,15 +54,31 @@ public class FilmController {
         }
         return filmService.getPopularFilms(count);
     }
+    //update
+    @PutMapping("/films")
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        filmValidator.validateFilmIds(film.getId());
+        filmValidator.validateFilmDate(film);
+        return filmService.updateFilm(film);
+    }
+    //delete
+    @DeleteMapping("/films")
+    public void clearFilmStorage() {
+        filmService.clearFilmStorage();
+    }
 
-    @PutMapping("/{id}/like/{userId}")
+    //likes
+    //create
+    @PutMapping("/films/{id}/like/{userId}")
     public void addLike(@PathVariable int id, @PathVariable int userId) {
         filmValidator.validateFilmIds(id);
         userValidator.validateUserIds(userId);
         filmService.addLike(id, userId);
     }
-
-    @DeleteMapping("/{id}/like/{userId}")
+    //read
+    //update
+    //delete
+    @DeleteMapping("/films/{id}/like/{userId}")
     public void removeLike(@PathVariable int id, @PathVariable int userId) {
         filmValidator.validateFilmIds(id);
         userValidator.validateUserIds(userId);

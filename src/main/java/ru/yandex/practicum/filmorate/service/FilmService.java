@@ -15,34 +15,17 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
 
-    //storage
-    public Map<Integer, Film> getFilms() {
-        return filmStorage.getFilms();
-    }
-
+    //films
+    //create
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
-
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
-    }
-
+    //read
     public Film getFilm(int id) {
         return filmStorage.getFilm(id);
     }
-
-    public void clearFilmStorage() {
-        filmStorage.clearFilmStorage();
-    }
-
-    //likes
-    public void addLike(int filmId, int userId) {
-        filmStorage.getFilm(filmId).getLikedUsersIds().add(userId);
-    }
-
-    public void removeLike(int filmId, int userId) {
-        filmStorage.getFilm(filmId).getLikedUsersIds().remove(userId);
+    public Map<Integer, Film> getFilms() {
+        return filmStorage.getFilms();
     }
 
     public Set<Film> getPopularFilms(int count) {
@@ -55,5 +38,25 @@ public class FilmService {
         });
         popularFilms.addAll(filmStorage.getFilms().values());
         return popularFilms.stream().limit(count).collect(Collectors.toSet());
+    }
+    //update
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+    //delete
+    public void clearFilmStorage() {
+        filmStorage.clearFilmStorage();
+    }
+
+    //likes
+    //create
+    public void addLike(int filmId, int userId) {
+        filmStorage.getFilm(filmId).getLikedUsersIds().add(userId);
+    }
+    //read
+    //update
+    //delete
+    public void removeLike(int filmId, int userId) {
+        filmStorage.getFilm(filmId).getLikedUsersIds().remove(userId);
     }
 }
