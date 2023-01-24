@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.StringWriter;
@@ -32,6 +34,7 @@ public class FilmControllerTest {
 
     private static ObjectMapper mapper;
     private StringWriter writer;
+    private Film film;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -45,6 +48,7 @@ public class FilmControllerTest {
     @BeforeEach
     void beforeEach() {
         writer = new StringWriter();
+        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
     }
     @AfterEach
     void afterEach() throws Exception {
@@ -61,7 +65,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnFilmWhenFilmWasAdded() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -79,7 +82,6 @@ public class FilmControllerTest {
     //POST
     @Test
     void shouldReturnFilmSetWhenFilmWasAdded() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -91,28 +93,28 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnStatusCode500WhenAddingFilmWithEmptyName() throws Exception {
-        Film film = new Film("", "Description", LocalDate.of(2000, 1, 1), 120);
+        film.setName("");
         mapper.writeValue(writer, film);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode500WhenAddingFilmWithLongDescription() throws Exception {
-        Film film = new Film("Name", "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription", LocalDate.of(2000, 1, 1), 120);
+        film.setDescription("DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription");
         mapper.writeValue(writer, film);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode400WhenAddingFilmWithReleaseDateBefore28_10_1985() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(1894, 1, 1), 120);
+        film.setReleaseDate(LocalDate.of(1894, 1, 1));
         mapper.writeValue(writer, film);
         assertEquals(400, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode500WhenAddingFilmWithNegativeDuration() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), -1);
+        film.setDuration(-1);
         mapper.writeValue(writer, film);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
@@ -120,7 +122,6 @@ public class FilmControllerTest {
     //PUT
     @Test
     void shouldReturnUpdatedFilmSetWhenFilmWasUpdated() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -129,7 +130,7 @@ public class FilmControllerTest {
         mapper.writeValue(writer, Set.of(film));
         assertEquals(writer.toString(), getRequest(URN).getContentAsString());
 
-        Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120);
+        Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
         writer = new StringWriter();
         mapper.writeValue(writer, updatedFilm);
         putRequest(URN, writer.toString());
@@ -141,7 +142,7 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnStatusCode404WhenUpdatingNonExistentFilm() throws Exception {
-        Film film = new Film(1, "Name", "Description", LocalDate.of(2000, 1, 1), 120);
+        film.setId(1);
         mapper.writeValue(writer, film);
         assertEquals(404, putRequest(URN, writer.toString()).getStatus());
     }
@@ -149,7 +150,6 @@ public class FilmControllerTest {
     //likes
     @Test
     void shouldReturnLikedUsersIdSetWhenAddingLikeToFilm() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -171,7 +171,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnStatusCode404WhenAddingLikeFromUserWithWrongId() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -180,7 +179,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldRemoveLike() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -213,7 +211,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnStatusCode404WhenWhenRemovingLikeFromUserWithWrongId() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -222,7 +219,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnSetWithOneFilmWhenAddingOneFilmAndGettingPopularFilmsRequestWithNoParameters() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
@@ -234,7 +230,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnSetWithTenFilmsWhenAddingElevenFilmsAndGettingPopularFilmsRequestWithNoParameters() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         for (int i = 0; i < 11; i++) {
             writer = new StringWriter();
             mapper.writeValue(writer, film);
@@ -244,7 +239,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         Set<Film> set = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
+            film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
             film.setId(i+1);
             set.add(film);
         }
@@ -255,7 +250,6 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnSetWithOneFilmWhenAddingTwoFilmsAndGettingPopularFilmsRequestWithParameter1() throws Exception {
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         for (int i = 0; i < 2; i++) {
             writer = new StringWriter();
             mapper.writeValue(writer, film);
@@ -272,14 +266,13 @@ public class FilmControllerTest {
     void shouldReturnOrderedFilmSetWhenGettingPopularFilmsRequest() throws Exception {
         Set<Film> expectedSet = new HashSet<>();
 
-        Film film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
         film.setLikedUsersIds(Set.of(1, 2));
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
         film.setId(1);
         expectedSet.add(film);
 
-        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120);
+        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
         film.setLikedUsersIds(Set.of(1));
         writer = new StringWriter();
         mapper.writeValue(writer, film);

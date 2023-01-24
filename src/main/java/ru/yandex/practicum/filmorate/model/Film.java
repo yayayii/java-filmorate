@@ -19,24 +19,31 @@ public class Film {
     private LocalDate releaseDate;
     @PositiveOrZero
     private int duration;
+    private Mpa mpa;
+    private Set<Genre> genres = new HashSet<>();
+
     private Set<Integer> likedUsersIds = new HashSet<>();
 
     public Film() {
     }
 
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
+    public Film(String name, String description, LocalDate releaseDate, int duration, Mpa mpa, Set<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
     }
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Mpa mpa, Set<Genre> genres) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
     }
 
     @Override

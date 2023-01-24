@@ -39,7 +39,6 @@ public class UserService {
     //create
     public void addFriend(int userId, int friendId) {
         userStorage.getUser(userId).getFriendsIds().add(friendId);
-        userStorage.getUser(friendId).getFriendsIds().add(userId);
     }
     //read
     public Set<User> getFriends(int userId) {
