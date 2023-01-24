@@ -20,7 +20,9 @@ import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -282,6 +284,42 @@ public class FilmControllerTest {
 
         Set<Film> actualSet = mapper.readValue(getRequest(URN + "/popular").getContentAsString(), new TypeReference<>(){});
         assertEquals(expectedSet, actualSet);
+    }
+
+    //mpa
+    @Test
+    void shouldReturnGWhenGettingMpaWithId1() throws Exception {
+        mapper.writeValue(writer, Mpa.G);
+        assertEquals(writer.toString(), getRequest("/mpa/1").getContentAsString());
+    }
+
+    @Test
+    void shouldReturnStatusCode404WhenGettingMpaWithWrongId() throws Exception {
+        assertEquals(404, getRequest("/mpa/999").getStatus());
+    }
+
+    @Test
+    void shouldReturnAllMpas() throws Exception {
+        mapper.writeValue(writer, Mpa.values());
+        assertEquals(writer.toString(), getRequest("/mpa").getContentAsString());
+    }
+
+    //genres
+    @Test
+    void shouldReturnComedyWhenGettingGenreWithId1() throws Exception {
+        mapper.writeValue(writer, Genre.COMEDY);
+        assertEquals(writer.toString(), getRequest("/genres/1").getContentAsString(StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void shouldReturnStatusCode404WhenGettingGenreWithWrongId() throws Exception {
+        assertEquals(404, getRequest("/genres/999").getStatus());
+    }
+
+    @Test
+    void shouldReturnAllGenres() throws Exception {
+        mapper.writeValue(writer, Genre.values());
+        assertEquals(writer.toString(), getRequest("/genres").getContentAsString(StandardCharsets.UTF_8));
     }
 
     //sending requests
