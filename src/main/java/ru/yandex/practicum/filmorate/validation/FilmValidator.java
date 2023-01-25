@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.validation;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -11,10 +11,13 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import java.time.LocalDate;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class FilmValidator {
     private final FilmStorage filmStorage;
+
+    public FilmValidator(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
+    }
 
     public void validateFilmIds(int... ids) {
         for (int id : ids) {

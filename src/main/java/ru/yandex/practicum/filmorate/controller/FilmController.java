@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.GenreDoesntExistsException;
 import ru.yandex.practicum.filmorate.exception.MpaDoesntExistsException;
 import ru.yandex.practicum.filmorate.model.film.Film;
@@ -35,13 +34,8 @@ public class FilmController {
     //read
     @GetMapping("/films/{id}")
     public Film getFilm(@PathVariable int id) {
-        Film film = filmService.getFilm(id);
-        if (film == null) {
-            RuntimeException exception = new FilmDoesntExistException("Film with id=" + id + " doesn't exists.");
-            log.warn(exception.getMessage());
-            throw exception;
-        }
-        return film;
+        filmValidator.validateFilmIds(id);
+        return filmService.getFilm(id);
     }
 
     @GetMapping("/films")
