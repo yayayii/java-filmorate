@@ -18,7 +18,7 @@ create table if not exists genre (
 );
 
 create table if not exists film_genre (
-    film_id int references film (id),
+    film_id int references film (id) on delete cascade,
     genre_id int references genre (id),
     constraint film_genre_pk primary key (film_id, genre_id)
 );
@@ -32,14 +32,14 @@ create table if not exists users (
 );
 
 create table if not exists liked_film (
-    film_id int references film (id),
-    user_id int references users (id),
+    film_id int references film (id) on delete cascade,
+    user_id int references users (id) on delete cascade,
     constraint liked_film_pk primary key (film_id, user_id)
 );
 
 create table if not exists friend (
-    user_id int references users (id),
-    other_user_id int references users (id),
+    user_id int references users (id) on delete cascade,
+    other_user_id int references users (id) on delete cascade,
     constraint friend_pk primary key (user_id, other_user_id),
     constraint friend_id_check check (user_id <> other_user_id)
 );

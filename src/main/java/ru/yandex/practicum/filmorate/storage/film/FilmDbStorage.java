@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class FilmDbStorage implements FilmStorage{
@@ -45,13 +47,14 @@ public class FilmDbStorage implements FilmStorage{
         film.setId(keyHolder.getKey().intValue());
 
         if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-            String sqlGenre = "insert into film_genre " +
+            String sqlGenres = "insert into film_genre " +
                     "values (?, ?)";
             for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
+                jdbcTemplate.update(sqlGenres, film.getId(), genre.getId());
             }
         }
 
+        log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
 
@@ -64,7 +67,7 @@ public class FilmDbStorage implements FilmStorage{
                 "where f.id = ? " +
                 "group by f.id";
 
-        return jdbcTemplate.queryForObject(sql, this::mapRowToFilm, id);
+        return jdbcTemplate.queryForObject(sql, FilmDbStorage::mapRowToFilm, id);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class FilmDbStorage implements FilmStorage{
                 "on f.id = fg.film_id " +
                 "group by f.id";
 
-        return jdbcTemplate.query(sql, this::mapRowToFilm).
+        return jdbcTemplate.query(sql, FilmDbStorage::mapRowToFilm).
                 stream().collect(Collectors.toMap(Film::getId, Function.identity()));
     }
 
@@ -91,18 +94,21 @@ public class FilmDbStorage implements FilmStorage{
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(),
                 film.getDuration(), film.getMpa().getId(), film.getId());
 
-        if (film.getGenres() != null && !film.getGenres().isEmpty()) {
-            String sqlDeleteGenres = "delete from film_genre " +
+        if (film.getGenres() != null) {
+            sql = "delete from film_genre " +
                     "where film_id = ?";
-            jdbcTemplate.update(sqlDeleteGenres, film.getId());
+            jdbcTemplate.update(sql, film.getId());
 
-            String sqlInsertGenres = "insert into film_genre " +
-                    "values (?, ?)";
-            for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlInsertGenres, film.getId(), genre.getId());
+            if (!film.getGenres().isEmpty()) {
+                sql = "insert into film_genre " +
+                        "values (?, ?)";
+                for (Genre genre : film.getGenres()) {
+                    jdbcTemplate.update(sql, film.getId(), genre.getId());
+                }
             }
         }
 
+        log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
 
@@ -110,9 +116,16 @@ public class FilmDbStorage implements FilmStorage{
     public void clearFilmStorage() {
         String sql = "delete from film";
         jdbcTemplate.update(sql);
+
+        sql = "alter table film " +
+                "alter column id " +
+                "restart with 1";
+        jdbcTemplate.update(sql);
+
+        log.info("Film storage was cleared.");
     }
 
-    private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
+    public static Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
         int id = rs.getInt("id");
         String name = rs.getString("name");
         String description = rs.getString("description");
@@ -129,7 +142,7 @@ public class FilmDbStorage implements FilmStorage{
         return new Film(id, name, description, releaseDate, duration, mpa, genres);
     }
 
-    private Set<Genre> getGenres(String genreIds) {
+    private static Set<Genre> getGenres(String genreIds) {
         Set<Genre> genres = new HashSet<>();
         for (String genreId : genreIds.split(",")) {
             genres.add(Genre.forValues(Integer.parseInt(genreId)));

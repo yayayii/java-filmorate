@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model.film;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +31,7 @@ public class Film {
             return 1;
         }
     }));
-
+    @JsonIgnore
     private Set<Integer> likedUsersIds = new HashSet<>();
 
     public Film() {
