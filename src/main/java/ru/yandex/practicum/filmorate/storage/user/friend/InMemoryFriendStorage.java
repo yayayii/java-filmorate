@@ -1,9 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.user.friend;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -13,9 +12,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFriendStorage implements FriendStorage {
-    private final UserStorage userStorage;
+    private final InMemoryUserStorage userStorage;
 
-    public InMemoryFriendStorage(@Qualifier("inMemoryUserStorage") UserStorage userStorage) {
+    public InMemoryFriendStorage(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
 

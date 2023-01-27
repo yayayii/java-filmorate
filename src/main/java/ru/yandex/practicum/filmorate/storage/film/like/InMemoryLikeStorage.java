@@ -1,9 +1,8 @@
 package ru.yandex.practicum.filmorate.storage.film.like;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,9 +10,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class InMemoryLikeStorage implements LikeStorage{
-    private final FilmStorage filmStorage;
+    private final InMemoryFilmStorage filmStorage;
 
-    public InMemoryLikeStorage(@Qualifier("inMemoryFilmStorage") FilmStorage filmStorage) {
+    public InMemoryLikeStorage(InMemoryFilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
