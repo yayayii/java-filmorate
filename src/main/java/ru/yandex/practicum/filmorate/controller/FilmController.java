@@ -42,16 +42,6 @@ public class FilmController {
     public Collection<Film> getFilms() {
         return filmService.getFilms().values();
     }
-
-    @GetMapping("/films/popular")
-    public Set<Film> getPopularFilms(
-            @RequestParam(defaultValue = "10", required = false) int count) {
-        filmValidator.validateFilmsCount(count);
-        if (count > filmService.getFilms().size()) {
-            count = filmService.getFilms().size();
-        }
-        return filmService.getPopularFilms(count);
-    }
     //update
     @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film) {
@@ -74,6 +64,21 @@ public class FilmController {
         filmService.addLike(id, userId);
     }
     //read
+    @GetMapping("/films/{id}/like")
+    public Set<Integer> getLikedUsersIds(@PathVariable int id) {
+        filmValidator.validateFilmIds(id);
+        return filmService.getLikedUsersIds(id);
+    }
+
+    @GetMapping("/films/popular")
+    public Set<Film> getPopularFilms(
+            @RequestParam(defaultValue = "10", required = false) int count) {
+        filmValidator.validateFilmsCount(count);
+        if (count > filmService.getFilms().size()) {
+            count = filmService.getFilms().size();
+        }
+        return filmService.getPopularFilms(count);
+    }
     //update
     //delete
     @DeleteMapping("/films/{id}/like/{userId}")
