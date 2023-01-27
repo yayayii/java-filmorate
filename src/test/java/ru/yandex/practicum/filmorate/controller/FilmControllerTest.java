@@ -20,7 +20,6 @@ import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -73,7 +72,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         film.setId(1);
         mapper.writeValue(writer, film);
-        assertEquals(writer.toString(), getRequest(URN + "/1").getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN + "/1").getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -90,7 +89,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         film.setId(1);
         mapper.writeValue(writer, Set.of(film));
-        assertEquals(writer.toString(), getRequest(URN).getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN).getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -130,7 +129,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         film.setId(1);
         mapper.writeValue(writer, Set.of(film));
-        assertEquals(writer.toString(), getRequest(URN).getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN).getContentAsString(StandardCharsets.UTF_8));
 
         Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
         writer = new StringWriter();
@@ -139,7 +138,7 @@ public class FilmControllerTest {
 
         writer = new StringWriter();
         mapper.writeValue(writer, Set.of(updatedFilm));
-        assertEquals(writer.toString(), getRequest(URN).getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN).getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -163,7 +162,8 @@ public class FilmControllerTest {
         putRequest(URN + "/1/like/1");
 
         film.setLikedUsersIds(Set.of(1));
-        assertEquals(film.getLikedUsersIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), Film.class).getLikedUsersIds());
+        Set<Integer> actualSet = mapper.readValue(getRequest(URN + "/1/like").getContentAsString(StandardCharsets.UTF_8), new TypeReference<>(){});
+        assertEquals(film.getLikedUsersIds(), actualSet);
     }
 
     @Test
@@ -198,12 +198,15 @@ public class FilmControllerTest {
         putRequest(URN + "/1/like/2");
 
         film.setLikedUsersIds(Set.of(1, 2));
-        assertEquals(film.getLikedUsersIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), Film.class).getLikedUsersIds());
+        Set<Integer> actualSet = mapper.readValue(getRequest(URN + "/1/like").getContentAsString(StandardCharsets.UTF_8), new TypeReference<>(){});
+        assertEquals(film.getLikedUsersIds(), actualSet);
+
 
         deleteRequest(URN + "/1/like/2");
 
         film.setLikedUsersIds(Set.of(1));
-        assertEquals(film.getLikedUsersIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), Film.class).getLikedUsersIds());
+        actualSet = mapper.readValue(getRequest(URN + "/1/like").getContentAsString(StandardCharsets.UTF_8), new TypeReference<>(){});
+        assertEquals(film.getLikedUsersIds(), actualSet);
     }
 
     @Test
@@ -227,7 +230,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         film.setId(1);
         mapper.writeValue(writer, Set.of(film));
-        assertEquals(writer.toString(), getRequest(URN+"/popular").getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN+"/popular").getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -247,7 +250,7 @@ public class FilmControllerTest {
         }
         mapper.writeValue(writer, set);
 
-        assertEquals(writer.toString(), getRequest(URN+"/popular").getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN+"/popular").getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -261,7 +264,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         film.setId(1);
         mapper.writeValue(writer, Set.of(film));
-        assertEquals(writer.toString(), getRequest(URN+"/popular?count=1").getContentAsString());
+        assertEquals(writer.toString(), getRequest(URN+"/popular?count=1").getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -282,7 +285,7 @@ public class FilmControllerTest {
         film.setId(2);
         expectedSet.add(film);
 
-        Set<Film> actualSet = mapper.readValue(getRequest(URN + "/popular").getContentAsString(), new TypeReference<>(){});
+        Set<Film> actualSet = mapper.readValue(getRequest(URN + "/popular").getContentAsString(StandardCharsets.UTF_8), new TypeReference<>(){});
         assertEquals(expectedSet, actualSet);
     }
 
@@ -290,7 +293,7 @@ public class FilmControllerTest {
     @Test
     void shouldReturnGWhenGettingMpaWithId1() throws Exception {
         mapper.writeValue(writer, Mpa.G);
-        assertEquals(writer.toString(), getRequest("/mpa/1").getContentAsString());
+        assertEquals(writer.toString(), getRequest("/mpa/1").getContentAsString(StandardCharsets.UTF_8));
     }
 
     @Test
@@ -301,7 +304,7 @@ public class FilmControllerTest {
     @Test
     void shouldReturnAllMpas() throws Exception {
         mapper.writeValue(writer, Mpa.values());
-        assertEquals(writer.toString(), getRequest("/mpa").getContentAsString());
+        assertEquals(writer.toString(), getRequest("/mpa").getContentAsString(StandardCharsets.UTF_8));
     }
 
     //genres

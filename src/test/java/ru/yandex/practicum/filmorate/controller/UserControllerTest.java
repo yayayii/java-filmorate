@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -175,10 +176,12 @@ public class UserControllerTest {
         putRequest(URN + "/1/friends/2");
 
         user.setFriendsIds(Set.of(2));
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
         user.setFriendsIds(Collections.emptySet());
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/2").getContentAsString(), User.class).getFriendsIds());
+        actualSet = mapper.readValue(getRequest(URN + "/2/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test
@@ -270,13 +273,13 @@ public class UserControllerTest {
 
         putRequest(URN + "/1/friends/2");
 
-        assertEquals(Set.of(2),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Set.of(2), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
         deleteRequest(URN + "/1/friends/2");
 
-        assertEquals(Collections.emptySet(),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
+        actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Collections.emptySet(),actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test
