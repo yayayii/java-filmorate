@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
@@ -11,15 +11,15 @@ import ru.yandex.practicum.filmorate.storage.film.like.LikeStorage;
 import java.util.Map;
 import java.util.Set;
 
-@RequiredArgsConstructor
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeStorage likeStorage;
 
-    //storage
-    public Map<Integer, Film> getFilms() {
-        return filmStorage.getFilms();
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("likeDbStorage") LikeStorage likeStorage) {
+        this.filmStorage = filmStorage;
+        this.likeStorage = likeStorage;
     }
 
     //films

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.validation;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -9,10 +9,13 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class UserValidator {
     private final UserStorage userStorage;
+
+    public UserValidator(@Qualifier("userDbStorage") UserStorage userStorage) {
+        this.userStorage = userStorage;
+    }
 
     public void validateUserIds(int... ids) {
         for (int id : ids) {
