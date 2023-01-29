@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.user;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +16,9 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.StringWriter;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,6 +29,7 @@ public class UserControllerTest {
 
     private static ObjectMapper mapper;
     private StringWriter writer;
+    private User user;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
@@ -39,6 +42,7 @@ public class UserControllerTest {
     }
     @BeforeEach
     void beforeEach() {
+        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
     }
     @AfterEach
@@ -56,7 +60,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnUserWhenUserWasAdded() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -74,7 +77,6 @@ public class UserControllerTest {
     //POST
     @Test
     void shouldReturnUserSetWhenUserWasAdded() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -86,35 +88,35 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnStatusCode500WhenAddingUserWithEmptyEmail() throws Exception {
-        User user = new User("", "login", "name", LocalDate.of(2000, 1, 1));
+        user.setEmail("");
         mapper.writeValue(writer, user);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode500WhenAddingUserWithWrongEmail() throws Exception {
-        User user = new User("email", "login", "name", LocalDate.of(2000, 1, 1));
+        user.setEmail("email");
         mapper.writeValue(writer, user);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnStatusCode500WhenAddingUserWithEmptyLogin() throws Exception {
-        User user = new User("email@qwe.ru", "", "name", LocalDate.of(2000, 1, 1));
+        user.setLogin("");
         mapper.writeValue(writer, user);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
-    void shouldReturnStatusCode500WhenAddingUserWithWrongLogin() throws Exception {
-        User user = new User("email@", " login ", "name", LocalDate.of(2000, 1, 1));
+    void shouldReturnStatusCode400WhenAddingUserWithWrongLogin() throws Exception {
+        user.setLogin(" login ");
         mapper.writeValue(writer, user);
-        assertEquals(500, postRequest(URN, writer.toString()).getStatus());
+        assertEquals(400, postRequest(URN, writer.toString()).getStatus());
     }
 
     @Test
     void shouldReturnUserSetWithUserNameEqualsToHisLoginWhenAddingUserWithEmptyName() throws Exception {
-        User user = new User("email@qwe.ru", "login", "", LocalDate.of(2000, 1, 1));
+        user.setName("");
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -127,7 +129,7 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnStatusCode500WhenAddingUserWithWrongBirthday() throws Exception {
-        User user = new User("email@", "login", "name", LocalDate.of(2040, 1, 1));
+        user.setBirthday(LocalDate.of(2040, 1, 1));
         mapper.writeValue(writer, user);
         assertEquals(500, postRequest(URN, writer.toString()).getStatus());
     }
@@ -135,7 +137,6 @@ public class UserControllerTest {
     //PUT
     @Test
     void shouldReturnUpdatedUserSetWhenUserWasUpdated() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -155,16 +156,15 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldReturnStatusCode500WhenUpdatingNonExistentUser() throws Exception {
-        User user = new User(1, "email@", "login", "name", LocalDate.of(2000, 1, 1));
+    void shouldReturnStatusCode404WhenUpdatingNonExistentUser() throws Exception {
+        user.setId(1);
         mapper.writeValue(writer, user);
-        assertEquals(500, putRequest(URN, writer.toString()).getStatus());
+        assertEquals(404, putRequest(URN, writer.toString()).getStatus());
     }
 
     //friends
     @Test
     void shouldAddFriends() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -176,10 +176,12 @@ public class UserControllerTest {
         putRequest(URN + "/1/friends/2");
 
         user.setFriendsIds(Set.of(2));
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
-        user.setFriendsIds(Set.of(1));
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/2").getContentAsString(), User.class).getFriendsIds());
+        user.setFriendsIds(Collections.emptySet());
+        actualSet = mapper.readValue(getRequest(URN + "/2/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test
@@ -189,7 +191,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnStatusCode404WheAddingFriendWithWrongId() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -198,7 +199,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnUserSetWhenGettingFriends() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -210,7 +210,6 @@ public class UserControllerTest {
         putRequest(URN + "/1/friends/2");
 
         anotherUser.setId(2);
-        anotherUser.setFriendsIds(Set.of(1));
         writer = new StringWriter();
         mapper.writeValue(writer, Set.of(anotherUser));
         assertEquals(writer.toString(), getRequest(URN + "/1/friends").getContentAsString());
@@ -223,7 +222,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnEmptySetWhenGettingMutualFriendsFromUsersWithNoMutualFriends() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -237,7 +235,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnSetWithMutualFriendsWhenGettingMutualFriendsFromUsersWithMutualFriends() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         for (int i = 0; i < 3; i++) {
             writer = new StringWriter();
             mapper.writeValue(writer, user);
@@ -261,7 +258,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnStatusCode404WhenGettingMutualFriendsFromAnotherUserWithWrongId() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
@@ -269,32 +265,21 @@ public class UserControllerTest {
     }
 
     @Test
-    void shouldDeleteFriendsFromThreeUsers() throws Exception {
-        for (int i = 0; i < 3; i++) {
-            User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+    void shouldDeleteFriend() throws Exception {
+        for (int i = 0; i < 2; i++) {
             mapper.writeValue(writer, user);
             postRequest(URN, writer.toString());
         }
 
         putRequest(URN + "/1/friends/2");
-        putRequest(URN + "/1/friends/3");
-        putRequest(URN + "/2/friends/3");
 
-        assertEquals(Set.of(2, 3),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
-        assertEquals(Set.of(1, 3),
-                mapper.readValue(getRequest(URN + "/2").getContentAsString(), User.class).getFriendsIds());
-        assertEquals(Set.of(1, 2),
-                mapper.readValue(getRequest(URN + "/3").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Set.of(2), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
-        deleteRequest(URN + "/1/friends/3");
+        deleteRequest(URN + "/1/friends/2");
 
-        assertEquals(Set.of(2),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
-        assertEquals(Set.of(1, 3),
-                mapper.readValue(getRequest(URN + "/2").getContentAsString(), User.class).getFriendsIds());
-        assertEquals(Set.of(2),
-                mapper.readValue(getRequest(URN + "/3").getContentAsString(), User.class).getFriendsIds());
+        actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Collections.emptySet(),actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test
@@ -304,7 +289,6 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnStatusCode404WhenDeletingFriendFromAnotherUserWithWrongId() throws Exception {
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
