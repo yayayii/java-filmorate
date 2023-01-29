@@ -4,60 +4,59 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.friend.FriendStorage;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendStorage friendStorage;
 
     //storage
     public Map<Integer, User> getUsers() {
         return userStorage.getUsers();
     }
 
+    //user
+    //create
     public User addUser(User user) {
         return userStorage.addUser(user);
     }
-
-    public User updateUser(User user) {
-        return userStorage.updateUser(user);
-    }
-
+    //read
     public User getUser(int id) {
         return userStorage.getUser(id);
     }
 
+    public Map<Integer, User> getUsers() {
+        return userStorage.getUsers();
+    }
+    //update
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+    //delete
     public void clearUserStorage() {
         userStorage.clearUserStorage();
     }
 
     //friends
+    //create
     public void addFriend(int userId, int friendId) {
-        userStorage.getUser(userId).getFriendsIds().add(friendId);
-        userStorage.getUser(friendId).getFriendsIds().add(userId);
+        friendStorage.addFriend(userId, friendId);
     }
-
-    public void deleteFriend(int userId, int friendId) {
-        userStorage.getUser(userId).getFriendsIds().remove(friendId);
-        userStorage.getUser(friendId).getFriendsIds().remove(userId);
-    }
-
+    //read
     public Set<User> getFriends(int userId) {
-        Set<User> friends = userStorage.getUser(userId).getFriendsIds()
-                .stream().map(userStorage::getUser).collect(Collectors.toSet());
-        Set<User> sortedFriends = new TreeSet<>(Comparator.comparingInt(User::getId));
-        sortedFriends.addAll(friends);
-        return sortedFriends;
+        return friendStorage.getFriends(userId);
     }
 
-    public Set<User> getMutualFriends(int userId, int anotherUserId) {
-        Set<Integer> mutualFriends = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
-        mutualFriends.retainAll(userStorage.getUser(anotherUserId).getFriendsIds());
-        Set<User> sortedMutualFriends = new TreeSet<>(Comparator.comparingInt(User::getId));
-        sortedMutualFriends.addAll(mutualFriends.stream().map(userStorage::getUser).collect(Collectors.toSet()));
-        return sortedMutualFriends;
+    public Set<User> getCommonFriends(int userId, int anotherUserId) {
+        return friendStorage.getCommonFriends(userId, anotherUserId);
+    }
+    //update
+    //delete
+    public void deleteFriend(int userId, int friendId) {
+        friendStorage.deleteFriend(userId, friendId);
     }
 }
