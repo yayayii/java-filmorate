@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
@@ -13,20 +13,21 @@ import java.util.Collection;
 import java.util.Set;
 
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
-@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final UserValidator userValidator;
 
-    //storage mapping
-    @GetMapping
-    public Collection<User> getUsers() {
-        return userService.getUsers().values();
+    //users
+    //create
+    @PostMapping("/users")
+    public User addUser(@Valid @RequestBody User user) {
+        userValidator.validateUserLogin(user);
+        return userService.addUser(user);
     }
-
-    @GetMapping("/{id}")
+    //read
+    @GetMapping("/users/{id}")
     public User getUser(@PathVariable int id) {
         userValidator.validateUserIds(id);
         User user = userService.getUser(id);
@@ -38,44 +39,44 @@ public class UserController {
         return user;
     }
 
-    @PostMapping
-    public User addUser(@Valid @RequestBody User user) {
-        userValidator.validateUserLogin(user);
-        return userService.addUser(user);
+    @GetMapping("/users")
+    public Collection<User> getUsers() {
+        return userService.getUsers().values();
     }
-
-    @PutMapping
+    //update
+    @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
         userValidator.validateUserIds(user.getId());
         userValidator.validateUserLogin(user);
         return userService.updateUser(user);
     }
-
-    @DeleteMapping
+    //delete
+    @DeleteMapping("/users")
     public void clearUserStorage() {
         userService.clearUserStorage();
     }
 
-    //friends mapping
-    @GetMapping("/{id}/friends")
-    public Set<User> getFriends(@PathVariable int id) {
-        userValidator.validateUserIds(id);
-        return userService.getFriends(id);
-    }
-
-    @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getMutualFriends(@PathVariable int id, @PathVariable int otherId) {
-        userValidator.validateUserIds(id, otherId);
-        return userService.getMutualFriends(id, otherId);
-    }
-
-    @PutMapping("/{id}/friends/{friendId}")
+    //friends
+    //create
+    @PutMapping("/users/{id}/friends/{friendId}")
     public void addFriend(@PathVariable int id, @PathVariable int friendId) {
         userValidator.validateUserIds(id, friendId);
         userService.addFriend(id, friendId);
     }
-
-    @DeleteMapping("/{id}/friends/{friendId}")
+    //read
+    @GetMapping("/users/{id}/friends")
+    public Set<User> getFriends(@PathVariable int id) {
+        userValidator.validateUserIds(id);
+        return userService.getFriends(id);
+    }
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public Set<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {
+        userValidator.validateUserIds(id, otherId);
+        return userService.getCommonFriends(id, otherId);
+    }
+    //update
+    //delete
+    @DeleteMapping("/users/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable int id, @PathVariable int friendId) {
         userValidator.validateUserIds(id, friendId);
         userService.deleteFriend(id, friendId);
