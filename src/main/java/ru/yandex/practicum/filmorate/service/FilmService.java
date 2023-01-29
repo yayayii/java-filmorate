@@ -2,58 +2,89 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.like.LikeStorage;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
+    private final LikeStorage likeStorage;
 
     //storage
     public Map<Integer, Film> getFilms() {
         return filmStorage.getFilms();
     }
 
+    //films
+    //create
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
-
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
-    }
-
+    //read
     public Film getFilm(int id) {
         return filmStorage.getFilm(id);
     }
 
+    public Map<Integer, Film> getFilms() {
+        return filmStorage.getFilms();
+    }
+    //update
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+    //delete
     public void clearFilmStorage() {
         filmStorage.clearFilmStorage();
     }
 
     //likes
+    //create
     public void addLike(int filmId, int userId) {
-        filmStorage.getFilm(filmId).getLikedUsersIds().add(userId);
+        likeStorage.addLike(filmId, userId);
     }
-
-    public void removeLike(int filmId, int userId) {
-        filmStorage.getFilm(filmId).getLikedUsersIds().remove(userId);
+    //read
+    public Set<Integer> getLikedUsersIds(int filmId) {
+        return likeStorage.getLikedUsersIds(filmId);
     }
-
     public Set<Film> getPopularFilms(int count) {
-        Set<Film> popularFilms = new TreeSet<>((o1, o2) -> {
-            if (o1.getLikedUsersIds().size() > o2.getLikedUsersIds().size()) {
-                return -1;
-            } else {
-                return 1;
-            }
-        });
-        popularFilms.addAll(filmStorage.getFilms().values());
-        return popularFilms.stream().limit(count).collect(Collectors.toSet());
+        return likeStorage.getPopularFilms(count);
     }
+    //update
+    //delete
+    public void removeLike(int filmId, int userId) {
+        likeStorage.removeLike(filmId, userId);
+    }
+
+    //mpa
+    //create
+    //read
+    public Mpa getMpa(int id) {
+        return Mpa.forValues(id);
+    }
+
+    public Mpa[] getMpas() {
+        return Mpa.values();
+    }
+    //update
+    //delete
+
+    //genre
+    //create
+    //read
+    public Genre getGenre(int id) {
+        return Genre.forValues(id);
+    }
+
+    public Genre[] getGenres() {
+        return Genre.values();
+    }
+    //update
+    //delete
 }
