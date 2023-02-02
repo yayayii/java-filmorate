@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class MpaService {
@@ -13,7 +15,7 @@ public class MpaService {
     public Mpa getMpa(int id) {
         return mpaStorage.getMpa(id);
     }
-    public Mpa[] getMpas() {
+    public Set<Mpa> getMpas() {
         return mpaStorage.getMpas();
     }
 }

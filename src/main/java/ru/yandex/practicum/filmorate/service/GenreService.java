@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
 
+import java.util.Set;
+
 @Service
 @AllArgsConstructor
 public class GenreService {
@@ -13,7 +15,7 @@ public class GenreService {
     public Genre getGenre(int id) {
         return genreStorage.getGenre(id);
     }
-    public Genre[] getGenres() {
+    public Set<Genre> getGenres() {
         return genreStorage.getGenres();
     }
 }

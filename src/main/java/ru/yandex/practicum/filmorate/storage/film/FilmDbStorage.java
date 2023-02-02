@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.GenreInMemory;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;

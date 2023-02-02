@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.GenreInMemory;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
@@ -27,7 +28,7 @@ public class FilmDbStorageApplicationTest {
 
     @BeforeEach
     void beforeEach() {
-        film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
     }
 
     @AfterEach

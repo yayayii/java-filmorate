@@ -15,9 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Mpa;
+import ru.yandex.practicum.filmorate.model.film.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.io.StringWriter;
@@ -49,7 +47,7 @@ public class FilmControllerTest {
     @BeforeEach
     void beforeEach() {
         writer = new StringWriter();
-        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
     }
     @AfterEach
     void afterEach() throws Exception {
@@ -131,7 +129,7 @@ public class FilmControllerTest {
         mapper.writeValue(writer, Set.of(film));
         assertEquals(writer.toString(), getRequest(URN).getContentAsString(StandardCharsets.UTF_8));
 
-        Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        Film updatedFilm = new Film(1, "Name", "Updated Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
         writer = new StringWriter();
         mapper.writeValue(writer, updatedFilm);
         putRequest(URN, writer.toString());
@@ -245,7 +243,7 @@ public class FilmControllerTest {
         writer = new StringWriter();
         Set<Film> set = new HashSet<>();
         for (int i = 0; i < 10; i++) {
-            film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+            film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
             film.setId(i+1);
             set.add(film);
         }
@@ -278,7 +276,7 @@ public class FilmControllerTest {
         film.setId(1);
         expectedSet.add(film);
 
-        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
         film.setLikedUsersIds(Set.of(1));
         writer = new StringWriter();
         mapper.writeValue(writer, film);
@@ -293,7 +291,7 @@ public class FilmControllerTest {
     //mpa
     @Test
     void shouldReturnGWhenGettingMpaWithId1() throws Exception {
-        mapper.writeValue(writer, Mpa.G);
+        mapper.writeValue(writer, MpaInMemory.G);
         assertEquals(writer.toString(), getRequest("/mpa/1").getContentAsString(StandardCharsets.UTF_8));
     }
 
@@ -304,14 +302,14 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnAllMpas() throws Exception {
-        mapper.writeValue(writer, Mpa.values());
+        mapper.writeValue(writer, MpaInMemory.values());
         assertEquals(writer.toString(), getRequest("/mpa").getContentAsString(StandardCharsets.UTF_8));
     }
 
     //genres
     @Test
     void shouldReturnComedyWhenGettingGenreWithId1() throws Exception {
-        mapper.writeValue(writer, Genre.COMEDY);
+        mapper.writeValue(writer, GenreInMemory.COMEDY);
         assertEquals(writer.toString(), getRequest("/genres/1").getContentAsString(StandardCharsets.UTF_8));
     }
 
@@ -322,7 +320,7 @@ public class FilmControllerTest {
 
     @Test
     void shouldReturnAllGenres() throws Exception {
-        mapper.writeValue(writer, Genre.values());
+        mapper.writeValue(writer, GenreInMemory.values());
         assertEquals(writer.toString(), getRequest("/genres").getContentAsString(StandardCharsets.UTF_8));
     }
 

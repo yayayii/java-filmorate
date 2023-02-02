@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.exception.EntityDoesntExistException;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.service.MpaService;
 
+import java.util.Set;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -28,7 +30,7 @@ public class MpaController {
         return mpa;
     }
     @GetMapping
-    public Mpa[] getMpas() {
+    public Set<Mpa> getMpas() {
         return mpaService.getMpas();
     }
 }

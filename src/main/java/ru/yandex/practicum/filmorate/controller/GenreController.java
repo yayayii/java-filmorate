@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.exception.EntityDoesntExistException;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.service.GenreService;
 
+import java.util.Set;
+
 @Slf4j
 @AllArgsConstructor
 @RestController
@@ -28,7 +30,7 @@ public class GenreController {
         return genre;
     }
     @GetMapping
-    public Genre[] getGenres() {
+    public Set<Genre> getGenres() {
         return genreService.getGenres();
     }
 }

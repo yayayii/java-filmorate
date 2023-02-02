@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
+import ru.yandex.practicum.filmorate.model.film.GenreInMemory;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.film.like.LikeDbStorage;
@@ -35,7 +36,7 @@ public class LikeDbStorageApplicationTest {
 
     @Test
     public void testAddLikeAndGetLikedUsersIds() {
-        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
         User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         filmStorage.addFilm(film);
         userStorage.addUser(user);
@@ -45,7 +46,7 @@ public class LikeDbStorageApplicationTest {
 
     @Test
     public void testGetPopularFilms() {
-        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
         filmStorage.addFilm(film);
         film.setId(1);
         assertThat(likeStorage.getPopularFilms(1)).contains(film);
@@ -53,7 +54,7 @@ public class LikeDbStorageApplicationTest {
 
     @Test
     public void testRemoveLike() {
-        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, Mpa.G, Set.of(Genre.COMEDY));
+        Film film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
         User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
         filmStorage.addFilm(film);
         userStorage.addUser(user);
