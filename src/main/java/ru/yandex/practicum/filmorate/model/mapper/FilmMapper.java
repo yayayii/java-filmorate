@@ -1,9 +1,12 @@
 package ru.yandex.practicum.filmorate.model.mapper;
 
+import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +15,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@AllArgsConstructor
 public class FilmMapper implements RowMapper<Film> {
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
+
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         int id = rs.getInt("id");
@@ -20,7 +27,7 @@ public class FilmMapper implements RowMapper<Film> {
         String description = rs.getString("description");
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         int duration = rs.getInt("duration");
-        Mpa mpa = Mpa.forValues(rs.getInt("mpa_id"));
+        Mpa mpa = mpaStorage.getMpa(rs.getInt("mpa_id"));
         Set<Genre> genres;
         if (rs.getString("genre_ids") != null) {
             genres = getGenres(rs.getString("genre_ids"));
@@ -34,7 +41,7 @@ public class FilmMapper implements RowMapper<Film> {
     private Set<Genre> getGenres(String genreIds) {
         Set<Genre> genres = new HashSet<>();
         for (String genreId : genreIds.split(",")) {
-            genres.add(Genre.forValues(Integer.parseInt(genreId)));
+            genres.add(genreStorage.getGenre(Integer.parseInt(genreId)));
         }
         return genres;
     }

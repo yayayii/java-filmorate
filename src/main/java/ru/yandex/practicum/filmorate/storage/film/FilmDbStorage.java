@@ -8,18 +8,13 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,6 +23,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class FilmDbStorage implements FilmStorage{
     private final JdbcTemplate jdbcTemplate;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
 
     //create
     @Override
@@ -69,7 +66,7 @@ public class FilmDbStorage implements FilmStorage{
                 "where f.id = ? " +
                 "group by f.id";
 
-        return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
+        return jdbcTemplate.queryForObject(sql, new FilmMapper(mpaStorage, genreStorage), id);
     }
     @Override
     public Map<Integer, Film> getFilms() {
@@ -79,7 +76,7 @@ public class FilmDbStorage implements FilmStorage{
                 "on f.id = fg.film_id " +
                 "group by f.id";
 
-        return jdbcTemplate.query(sql, new FilmMapper()).
+        return jdbcTemplate.query(sql, new FilmMapper(mpaStorage, genreStorage)).
                 stream().collect(Collectors.toMap(Film::getId, Function.identity()));
     }
     //update

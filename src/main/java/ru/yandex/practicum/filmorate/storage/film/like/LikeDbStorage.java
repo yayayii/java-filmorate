@@ -6,7 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class LikeDbStorage implements LikeStorage{
     private final JdbcTemplate jdbcTemplate;
+    private final MpaStorage mpaStorage;
+    private final GenreStorage genreStorage;
 
     //create
     @Override
@@ -54,7 +57,7 @@ public class LikeDbStorage implements LikeStorage{
         return new HashSet<>(jdbcTemplate.query(
                 sql,
                 new Object[]{count},
-                new FilmMapper())
+                new FilmMapper(mpaStorage, genreStorage))
         );
     }
     //update
