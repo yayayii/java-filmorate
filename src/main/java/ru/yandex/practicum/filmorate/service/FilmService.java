@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.film.Film;
-import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.like.LikeStorage;
 
@@ -62,28 +60,4 @@ public class FilmService {
     public void removeLike(int filmId, int userId) {
         likeStorage.removeLike(filmId, userId);
     }
-
-    //mpa
-    //create
-    //read
-    public Mpa getMpa(int id) {
-        return Mpa.forValues(id);
-    }
-    public Mpa[] getMpas() {
-        return Mpa.values();
-    }
-    //update
-    //delete
-
-    //genre
-    //create
-    //read
-    public Genre getGenre(int id) {
-        return Genre.forValues(id);
-    }
-    public Genre[] getGenres() {
-        return Genre.values();
-    }
-    //update
-    //delete
 }
