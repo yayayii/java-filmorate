@@ -30,7 +30,6 @@ public class UserService {
     public User getUser(int id) {
         return userStorage.getUser(id);
     }
-
     public Map<Integer, User> getUsers() {
         return userStorage.getUsers();
     }
@@ -52,7 +51,9 @@ public class UserService {
     public Set<User> getFriends(int userId) {
         return friendStorage.getFriends(userId);
     }
-
+    public Set<User> getConfirmedFriends(int userId) {
+        return friendStorage.getConfirmedFriends(userId);
+    }
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         return friendStorage.getCommonFriends(userId, anotherUserId);
     }

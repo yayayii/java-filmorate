@@ -22,6 +22,8 @@ public class User {
     private LocalDate birthday;
     @JsonIgnore
     private Set<Integer> friendsIds = new HashSet<>();
+    @JsonIgnore
+    private Set<Integer> confirmedFriendsIds = new HashSet<>();
 
     public User() {
     }

@@ -38,7 +38,6 @@ public class UserController {
         }
         return user;
     }
-
     @GetMapping("/users")
     public Collection<User> getUsers() {
         return userService.getUsers().values();
@@ -68,6 +67,11 @@ public class UserController {
     public Set<User> getFriends(@PathVariable int id) {
         userValidator.validateUserIds(id);
         return userService.getFriends(id);
+    }
+    @GetMapping("/users/{id}/friends/confirmed")
+    public Set<User> getConfirmedFriends(@PathVariable int id) {
+        userValidator.validateUserIds(id);
+        return userService.getConfirmedFriends(id);
     }
     @GetMapping("/users/{id}/friends/common/{otherId}")
     public Set<User> getCommonFriends(@PathVariable int id, @PathVariable int otherId) {

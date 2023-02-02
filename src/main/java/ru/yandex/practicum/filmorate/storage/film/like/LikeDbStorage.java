@@ -40,7 +40,6 @@ public class LikeDbStorage implements LikeStorage{
                 jdbcTemplate.queryForList(sql, Integer.class, filmId)
         );
     }
-
     @Override
     public Set<Film> getPopularFilms(int count) {
         String sql = "select f.*, group_concat(fg.genre_id) as genre_ids " +

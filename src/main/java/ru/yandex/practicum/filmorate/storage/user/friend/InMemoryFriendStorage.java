@@ -22,6 +22,12 @@ public class InMemoryFriendStorage implements FriendStorage {
     @Override
     public void addFriend(int userId, int friendId) {
         userStorage.getUser(userId).getFriendsIds().add(friendId);
+
+        if (userStorage.getUser(userId).getFriendsIds().contains(friendId) &&
+                userStorage.getUser(friendId).getFriendsIds().contains(userId)) {
+            userStorage.getUser(userId).getConfirmedFriendsIds().add(friendId);
+            userStorage.getUser(friendId).getConfirmedFriendsIds().add(userId);
+        }
     }
     //read
     @Override
@@ -32,7 +38,14 @@ public class InMemoryFriendStorage implements FriendStorage {
         sortedFriends.addAll(friends);
         return sortedFriends;
     }
-
+    @Override
+    public Set<User> getConfirmedFriends(int userId) {
+        Set<User> friends = userStorage.getUser(userId).getConfirmedFriendsIds()
+                .stream().map(userStorage::getUser).collect(Collectors.toSet());
+        Set<User> sortedFriends = new TreeSet<>(Comparator.comparingInt(User::getId));
+        sortedFriends.addAll(friends);
+        return sortedFriends;
+    }
     @Override
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         Set<Integer> mutualFriends = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
@@ -46,6 +59,8 @@ public class InMemoryFriendStorage implements FriendStorage {
     @Override
     public void deleteFriend(int userId, int friendId) {
         userStorage.getUser(userId).getFriendsIds().remove(friendId);
-        userStorage.getUser(friendId).getFriendsIds().remove(userId);
+
+        userStorage.getUser(userId).getConfirmedFriendsIds().remove(friendId);
+        userStorage.getUser(friendId).getConfirmedFriendsIds().remove(userId);
     }
 }

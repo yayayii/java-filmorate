@@ -9,6 +9,7 @@ public interface FriendStorage {
     void addFriend(int userId, int friendId);
     //read
     Set<User> getFriends(int userId);
+    Set<User> getConfirmedFriends(int userId);
     Set<User> getCommonFriends(int userId, int anotherUserId);
     //update
     //delete

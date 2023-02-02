@@ -44,3 +44,10 @@ create table if not exists friend (
     constraint friend_pk primary key (user_id, other_user_id),
     constraint friend_id_check check (user_id <> other_user_id)
 );
+
+create table if not exists confirmed_friend (
+    user_id int references users (id) on delete cascade,
+    other_user_id int references users (id) on delete cascade,
+    constraint confirmed_friend_pk primary key (user_id, other_user_id),
+    constraint confirmed_friend_id_check check (user_id < other_user_id)
+);

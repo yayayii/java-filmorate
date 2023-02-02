@@ -26,7 +26,6 @@ public class InMemoryLikeStorage implements LikeStorage{
     public Set<Integer> getLikedUsersIds(int filmId) {
         return filmStorage.getFilm(filmId).getLikedUsersIds();
     }
-
     @Override
     public Set<Film> getPopularFilms(int count) {
         Set<Film> popularFilms = new TreeSet<>((o1, o2) -> {

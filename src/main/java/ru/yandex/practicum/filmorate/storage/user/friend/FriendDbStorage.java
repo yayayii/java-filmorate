@@ -18,8 +18,24 @@ public class FriendDbStorage implements FriendStorage{
     @Override
     public void addFriend(int userId, int friendId) {
         String sql = "insert into friend " +
-                "values (?, ?)";
+                  "values (?, ?)";
         jdbcTemplate.update(sql, userId, friendId);
+
+        sql = "insert into confirmed_friend " +
+                "select * " +
+                "from friend " +
+                "where user_id = ? and other_user_id = ? " +
+                "and ( " +
+                "    select count(*) " +
+                "    from friend " +
+                "    where user_id = ? and other_user_id = ? " +
+                "       or user_id = ? and other_user_id = ? " +
+                ") = 2";
+        if (userId < friendId) {
+            jdbcTemplate.update(sql, userId, friendId, userId, friendId, friendId, userId);
+        } else {
+            jdbcTemplate.update(sql, friendId, userId, userId, friendId, friendId, userId);
+        }
     }
     //read
     @Override
@@ -36,7 +52,26 @@ public class FriendDbStorage implements FriendStorage{
                 UserDbStorage::mapRowToUser)
         );
     }
+    @Override
+    public Set<User> getConfirmedFriends(int userId) {
+        String sql = "select u.* " +
+                "from confirmed_friend as f " +
+                "join users as u " +
+                "on f.other_user_id = u.id " +
+                "where f.user_id = ? " +
+                "union " +
+                "select u.* " +
+                "from confirmed_friend as f " +
+                "join users as u " +
+                "on f.user_id = u.id " +
+                "where f.other_user_id = ? ";
 
+        return new HashSet<>(jdbcTemplate.query(
+                sql,
+                new Object[]{userId, userId},
+                UserDbStorage::mapRowToUser)
+        );
+    }
     @Override
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         String sql = "select u.* " +
@@ -73,13 +108,15 @@ public class FriendDbStorage implements FriendStorage{
     @Override
     public void deleteFriend(int userId, int friendId) {
         String sql = "delete from friend " +
-                        "where user_id = ? " +
-                        "and other_user_id = ?";
+                    "where user_id = ? " +
+                    "and other_user_id = ?";
+        jdbcTemplate.update(sql, userId, friendId);
 
-        jdbcTemplate.update(
-                sql,
-                userId,
-                friendId
-        );
+        sql = "delete from confirmed_friend " +
+                "where user_id = ? " +
+                "and other_user_id = ? " +
+                "or user_id = ? " +
+                "and other_user_id = ?";
+        jdbcTemplate.update(sql, userId, friendId, friendId, userId);
     }
 }

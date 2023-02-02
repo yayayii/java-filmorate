@@ -33,7 +33,6 @@ public class FilmService {
     public Film getFilm(int id) {
         return filmStorage.getFilm(id);
     }
-
     public Map<Integer, Film> getFilms() {
         return filmStorage.getFilms();
     }
@@ -70,7 +69,6 @@ public class FilmService {
     public Mpa getMpa(int id) {
         return Mpa.forValues(id);
     }
-
     public Mpa[] getMpas() {
         return Mpa.values();
     }
@@ -83,7 +81,6 @@ public class FilmService {
     public Genre getGenre(int id) {
         return Genre.forValues(id);
     }
-
     public Genre[] getGenres() {
         return Genre.values();
     }
