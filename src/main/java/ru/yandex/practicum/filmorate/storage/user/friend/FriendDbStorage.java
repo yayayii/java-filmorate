@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.model.mapper.UserMapper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,7 +49,7 @@ public class FriendDbStorage implements FriendStorage{
         return new HashSet<>(jdbcTemplate.query(
                 sql,
                 new Object[]{userId},
-                UserDbStorage::mapRowToUser)
+                new UserMapper())
         );
     }
     @Override
@@ -69,7 +69,7 @@ public class FriendDbStorage implements FriendStorage{
         return new HashSet<>(jdbcTemplate.query(
                 sql,
                 new Object[]{userId, userId},
-                UserDbStorage::mapRowToUser)
+                new UserMapper())
         );
     }
     @Override
@@ -100,7 +100,7 @@ public class FriendDbStorage implements FriendStorage{
         return new HashSet<>(jdbcTemplate.query(
                 sql,
                 new Object[]{userId, userId, anotherUserId, anotherUserId},
-                UserDbStorage::mapRowToUser)
+                new UserMapper())
         );
     }
     //update

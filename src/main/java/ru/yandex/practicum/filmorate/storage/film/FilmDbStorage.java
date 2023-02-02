@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
+import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -68,7 +69,7 @@ public class FilmDbStorage implements FilmStorage{
                 "where f.id = ? " +
                 "group by f.id";
 
-        return jdbcTemplate.queryForObject(sql, FilmDbStorage::mapRowToFilm, id);
+        return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
     }
     @Override
     public Map<Integer, Film> getFilms() {
@@ -78,7 +79,7 @@ public class FilmDbStorage implements FilmStorage{
                 "on f.id = fg.film_id " +
                 "group by f.id";
 
-        return jdbcTemplate.query(sql, FilmDbStorage::mapRowToFilm).
+        return jdbcTemplate.query(sql, new FilmMapper()).
                 stream().collect(Collectors.toMap(Film::getId, Function.identity()));
     }
     //update
@@ -125,28 +126,5 @@ public class FilmDbStorage implements FilmStorage{
         log.info("Film storage was cleared.");
     }
 
-    public static Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("id");
-        String name = rs.getString("name");
-        String description = rs.getString("description");
-        LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
-        int duration = rs.getInt("duration");
-        Mpa mpa = Mpa.forValues(rs.getInt("mpa_id"));
-        Set<Genre> genres;
-        if (rs.getString("genre_ids") != null) {
-            genres = getGenres(rs.getString("genre_ids"));
-        } else {
-            genres = Collections.emptySet();
-        }
 
-        return new Film(id, name, description, releaseDate, duration, mpa, genres);
-    }
-
-    private static Set<Genre> getGenres(String genreIds) {
-        Set<Genre> genres = new HashSet<>();
-        for (String genreId : genreIds.split(",")) {
-            genres.add(Genre.forValues(Integer.parseInt(genreId)));
-        }
-        return genres;
-    }
 }

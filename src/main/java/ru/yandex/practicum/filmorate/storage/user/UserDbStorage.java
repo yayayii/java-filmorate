@@ -7,12 +7,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.mapper.UserMapper;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -52,14 +50,14 @@ public class UserDbStorage implements UserStorage{
                 "from users " +
                 "where id = ?";
 
-        return jdbcTemplate.queryForObject(sql, UserDbStorage::mapRowToUser, id);
+        return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
     }
     @Override
     public Map<Integer, User> getUsers() {
         String sql = "select * " +
                 "from users";
 
-        return jdbcTemplate.query(sql, UserDbStorage::mapRowToUser).
+        return jdbcTemplate.query(sql, new UserMapper()).
                 stream().collect(Collectors.toMap(User::getId, Function.identity()));
     }
     //update
@@ -90,15 +88,5 @@ public class UserDbStorage implements UserStorage{
         jdbcTemplate.update(sql);
 
         log.info("User storage was cleared.");
-    }
-
-    public static User mapRowToUser(ResultSet rs, int rowNum) throws SQLException {
-        int id = rs.getInt("id");
-        String email = rs.getString("email");
-        String login = rs.getString("login");
-        String name = rs.getString("name");
-        LocalDate birthday = rs.getDate("birthday").toLocalDate();
-
-        return new User(id, email, login, name, birthday);
     }
 }

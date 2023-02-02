@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
+import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
 import java.util.HashSet;
@@ -53,7 +54,7 @@ public class LikeDbStorage implements LikeStorage{
         return new HashSet<>(jdbcTemplate.query(
                 sql,
                 new Object[]{count},
-                FilmDbStorage::mapRowToFilm)
+                new FilmMapper())
         );
     }
     //update
