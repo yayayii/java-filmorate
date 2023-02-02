@@ -9,7 +9,8 @@ create table if not exists film (
     description varchar(200),
     release_date date,
     duration int,
-    mpa_id int references mpa (id)
+    mpa_id int references mpa (id),
+    likes_count int default 0
 );
 
 create table if not exists genre (

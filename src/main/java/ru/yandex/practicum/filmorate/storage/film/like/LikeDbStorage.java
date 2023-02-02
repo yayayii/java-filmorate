@@ -23,6 +23,11 @@ public class LikeDbStorage implements LikeStorage{
                 "values " +
                 "(?, ?)";
         jdbcTemplate.update(sql, filmId, userId);
+
+        sql = "update film " +
+                "set likes_count = likes_count+1 " +
+                "where id = ?";
+        jdbcTemplate.update(sql, filmId);
     }
     //read
     @Override
@@ -42,10 +47,8 @@ public class LikeDbStorage implements LikeStorage{
                 "from film as f " +
                 "left join film_genre as fg " +
                 "on f.id = fg.film_id " +
-                "left join liked_film as lf " +
-                "on f.id = lf.film_id " +
                 "group by f.id " +
-                "order by count(lf.film_id) desc, f.id " +
+                "order by f.likes_count desc, f.id " +
                 "limit ?";
 
         return new HashSet<>(jdbcTemplate.query(
@@ -62,5 +65,10 @@ public class LikeDbStorage implements LikeStorage{
                 "where film_id = ? " +
                 "and user_id = ?";
         jdbcTemplate.update(sql, filmId, userId);
+
+        sql = "update film " +
+                "set likes_count = likes_count-1 " +
+                "where id = ?";
+        jdbcTemplate.update(sql, filmId);
     }
 }
