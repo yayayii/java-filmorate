@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.GenreDoesntExistsException;
-import ru.yandex.practicum.filmorate.exception.MpaDoesntExistsException;
+import ru.yandex.practicum.filmorate.exception.EntityDoesntExistException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
@@ -95,7 +94,7 @@ public class FilmController {
     public Mpa getMpa(@PathVariable int id) {
         Mpa mpa = filmService.getMpa(id);
         if (mpa == null) {
-            RuntimeException exception = new MpaDoesntExistsException("Mpa with id=" + id + " doesn't exists.");
+            RuntimeException exception = new EntityDoesntExistException("Mpa with id=" + id + " doesn't exists.");
             log.warn(exception.getMessage());
             throw exception;
         }
@@ -116,7 +115,7 @@ public class FilmController {
     public Genre getGenre(@PathVariable int id) {
         Genre genre = filmService.getGenre(id);
         if (genre == null) {
-            RuntimeException exception = new GenreDoesntExistsException("Genre with id=" + id + " doesn't exists.");
+            RuntimeException exception = new EntityDoesntExistException("Genre with id=" + id + " doesn't exists.");
             log.warn(exception.getMessage());
             throw exception;
         }

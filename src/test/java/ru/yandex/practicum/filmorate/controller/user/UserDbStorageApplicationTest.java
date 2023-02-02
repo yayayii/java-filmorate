@@ -24,7 +24,7 @@ public class UserDbStorageApplicationTest {
 
     @BeforeEach
     void beforeEach() {
-        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
     }
 
     @AfterEach
@@ -41,6 +41,7 @@ public class UserDbStorageApplicationTest {
     @Test
     public void testGetUsers() {
         userStorage.addUser(user);
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         userStorage.addUser(user);
         assertThat(userStorage.getUsers()).containsKey(1);
         assertThat(userStorage.getUsers()).containsKey(2);
@@ -49,7 +50,7 @@ public class UserDbStorageApplicationTest {
     @Test
     public void testUpdateUser() {
         userStorage.addUser(user);
-        assertThat(userStorage.getUser(1)).hasFieldOrPropertyWithValue("login", "login");
+        assertThat(userStorage.getUser(1)).hasFieldOrPropertyWithValue("login", "login1");
 
         user.setId(1);
         user.setLogin("new login");

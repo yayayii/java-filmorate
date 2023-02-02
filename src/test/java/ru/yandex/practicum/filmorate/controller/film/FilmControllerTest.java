@@ -184,13 +184,14 @@ public class FilmControllerTest {
         mapper.writeValue(writer, film);
         postRequest(URN, writer.toString());
 
-        User user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, user);
         postRequest("/users", writer.toString());
 
         putRequest(URN + "/1/like/1");
 
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, user);
         postRequest("/users", writer.toString());

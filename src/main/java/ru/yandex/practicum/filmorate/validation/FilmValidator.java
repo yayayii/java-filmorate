@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.validation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmDoesntExistException;
+import ru.yandex.practicum.filmorate.exception.EntityDoesntExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class FilmValidator {
     private final FilmStorage filmStorage;
 
+    //inMemoryFilmStorage / filmDbStorage
     public FilmValidator(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
@@ -22,7 +23,7 @@ public class FilmValidator {
     public void validateFilmIds(int... ids) {
         for (int id : ids) {
             if (!filmStorage.getFilms().containsKey(id)) {
-                RuntimeException exception = new FilmDoesntExistException("Film with id=" + id + " doesn't exists.");
+                RuntimeException exception = new EntityDoesntExistException("Film with id=" + id + " doesn't exists.");
                 log.warn(exception.getMessage());
                 throw exception;
             }

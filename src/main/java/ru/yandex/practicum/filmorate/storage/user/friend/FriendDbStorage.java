@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,15 +62,11 @@ public class FriendDbStorage implements FriendStorage{
                 "join users as u " +
                 "on u.id = user_friend.user_id";
 
-        try {
-            return new HashSet<>(jdbcTemplate.query(
-                    sql,
-                    new Object[]{userId, userId, anotherUserId, anotherUserId},
-                    UserDbStorage::mapRowToUser)
-            );
-        } catch (Exception e) {
-            return Collections.emptySet();
-        }
+        return new HashSet<>(jdbcTemplate.query(
+                sql,
+                new Object[]{userId, userId, anotherUserId, anotherUserId},
+                UserDbStorage::mapRowToUser)
+        );
     }
     //update
     //delete

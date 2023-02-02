@@ -29,8 +29,8 @@ public class FriendDbStorageApplicationTest {
 
     @Test
     public void testAddAndGetFriends() {
-        User user1 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
-        User user2 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User user1 = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
+        User user2 = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         userStorage.addUser(user1);
         userStorage.addUser(user2);
         user1.setId(1);
@@ -43,9 +43,9 @@ public class FriendDbStorageApplicationTest {
 
     @Test
     public void testGetCommonFriends() {
-        User user1 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
-        User user2 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
-        User user3 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User user1 = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
+        User user2 = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
+        User user3 = new User("email3@qwe.ru", "login3", "name", LocalDate.of(2000, 1, 1));
         userStorage.addUser(user1);
         userStorage.addUser(user2);
         userStorage.addUser(user3);
@@ -61,8 +61,8 @@ public class FriendDbStorageApplicationTest {
 
     @Test
     public void testDeleteFriend() {
-        User user1 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
-        User user2 = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User user1 = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
+        User user2 = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         userStorage.addUser(user1);
         userStorage.addUser(user2);
 

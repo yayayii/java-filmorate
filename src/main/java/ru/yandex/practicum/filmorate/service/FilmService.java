@@ -16,6 +16,8 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeStorage likeStorage;
 
+    //inMemoryFilmStorage / filmDbStorage
+    //inMemoryLikeStorage / likeDbStorage
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        @Qualifier("likeDbStorage") LikeStorage likeStorage) {
         this.filmStorage = filmStorage;

@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.UserDoesntExistException;
+import ru.yandex.practicum.filmorate.exception.EntityDoesntExistException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.validation.UserValidator;
@@ -32,7 +32,7 @@ public class UserController {
         userValidator.validateUserIds(id);
         User user = userService.getUser(id);
         if (user == null) {
-            RuntimeException exception = new UserDoesntExistException("User with id=" + id + " doesn't exists.");
+            RuntimeException exception = new EntityDoesntExistException("User with id=" + id + " doesn't exists.");
             log.warn(exception.getMessage());
             throw exception;
         }

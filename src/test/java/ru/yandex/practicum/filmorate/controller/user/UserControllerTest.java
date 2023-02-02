@@ -42,7 +42,7 @@ public class UserControllerTest {
     }
     @BeforeEach
     void beforeEach() {
-        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
     }
     @AfterEach
@@ -168,7 +168,7 @@ public class UserControllerTest {
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
-        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
@@ -202,7 +202,7 @@ public class UserControllerTest {
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
-        User anotherUser = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User anotherUser = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, anotherUser);
         postRequest(URN, writer.toString());
@@ -235,11 +235,19 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnSetWithMutualFriendsWhenGettingMutualFriendsFromUsersWithMutualFriends() throws Exception {
-        for (int i = 0; i < 3; i++) {
-            writer = new StringWriter();
-            mapper.writeValue(writer, user);
-            postRequest(URN, writer.toString());
-        }
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email3@qwe.ru", "login3", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
         user.setId(3);
         user.setFriendsIds(Set.of(1, 2));
 
@@ -266,10 +274,13 @@ public class UserControllerTest {
 
     @Test
     void shouldDeleteFriend() throws Exception {
-        for (int i = 0; i < 2; i++) {
-            mapper.writeValue(writer, user);
-            postRequest(URN, writer.toString());
-        }
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
 
         putRequest(URN + "/1/friends/2");
 

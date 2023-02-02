@@ -13,6 +13,8 @@ public class UserService {
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
 
+    //inMemoryUserStorage / userDbStorage
+    //inMemoryFriendStorage / friendDbStorage
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
                        @Qualifier("friendDbStorage") FriendStorage friendStorage) {
         this.userStorage = userStorage;
