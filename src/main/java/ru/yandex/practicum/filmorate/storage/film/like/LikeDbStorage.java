@@ -6,19 +6,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-@Component
 @AllArgsConstructor
+@Component
 public class LikeDbStorage implements LikeStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final MpaStorage mpaStorage;
-    private final GenreStorage genreStorage;
+    private final MpaDbStorage mpaStorage;
+    private final GenreDbStorage genreStorage;
 
     //create
     @Override

@@ -4,9 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
 import ru.yandex.practicum.filmorate.model.film.MpaInMemory;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class InMemoryMpaStorage implements MpaStorage{
@@ -20,10 +19,10 @@ public class InMemoryMpaStorage implements MpaStorage{
     }
 
     @Override
-    public Set<Mpa> getMpas() {
-        Set<Mpa> mpas = new TreeSet<>(Comparator.comparingInt(Mpa::getId));
+    public Map<Integer, Mpa> getMpas() {
+        Map<Integer, Mpa> mpas = new HashMap<>();
         for (MpaInMemory mpa : MpaInMemory.values()) {
-            mpas.add(new Mpa(mpa.getId(), mpa.getName()));
+            mpas.put(mpa.getId(), new Mpa(mpa.getId(), mpa.getName()));
         }
         return mpas;
     }

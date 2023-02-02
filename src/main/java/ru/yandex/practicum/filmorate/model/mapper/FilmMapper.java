@@ -5,8 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.Mpa;
-import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,8 +17,8 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class FilmMapper implements RowMapper<Film> {
-    private final MpaStorage mpaStorage;
-    private final GenreStorage genreStorage;
+    private final MpaDbStorage mpaStorage;
+    private final GenreDbStorage genreStorage;
 
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {

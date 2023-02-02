@@ -8,10 +8,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
-import ru.yandex.practicum.filmorate.model.film.GenreInMemory;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -20,12 +19,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
 @AllArgsConstructor
+@Component
 public class FilmDbStorage implements FilmStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final MpaStorage mpaStorage;
-    private final GenreStorage genreStorage;
+    private final MpaDbStorage mpaStorage;
+    private final GenreDbStorage genreStorage;
 
     //create
     @Override

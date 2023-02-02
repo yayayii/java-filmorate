@@ -4,9 +4,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.film.GenreInMemory;
 
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class InMemoryGenreStorage implements GenreStorage{
@@ -20,10 +19,10 @@ public class InMemoryGenreStorage implements GenreStorage{
     }
 
     @Override
-    public Set<Genre> getGenres() {
-        Set<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+    public Map<Integer, Genre> getGenres() {
+        Map<Integer, Genre> genres = new HashMap<>();
         for (GenreInMemory genre : GenreInMemory.values()) {
-            genres.add(new Genre(genre.getId(), genre.getName()));
+            genres.put(genre.getId(), new Genre(genre.getId(), genre.getName()));
         }
         return genres;
     }
