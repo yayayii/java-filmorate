@@ -4,7 +4,7 @@ delete from genre;
 delete from liked_film;
 delete from film;
 delete from mpa;
-delete from users;
+delete from "USER";
 
 alter table genre
     alter column id
@@ -33,6 +33,6 @@ alter table film
     alter column id
         restart with 1;
 
-alter table users
+alter table "USER"
     alter column id
         restart with 1;

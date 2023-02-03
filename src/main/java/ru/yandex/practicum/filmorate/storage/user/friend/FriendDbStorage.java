@@ -42,34 +42,30 @@ public class FriendDbStorage implements FriendStorage{
     public Set<User> getFriends(int userId) {
         String sql = "select u.* " +
                 "from friend as f " +
-                "join users as u " +
+                "join \"USER\" as u " +
                 "on f.other_user_id = u.id " +
                 "where f.user_id = ?";
 
-        return new HashSet<>(jdbcTemplate.query(
-                sql,
-                new Object[]{userId},
-                new UserMapper())
+        return new HashSet<>(
+                jdbcTemplate.query(sql, new Object[]{userId}, new UserMapper())
         );
     }
     @Override
     public Set<User> getConfirmedFriends(int userId) {
         String sql = "select u.* " +
                 "from confirmed_friend as f " +
-                "join users as u " +
+                "join \"USER\" as u " +
                 "on f.other_user_id = u.id " +
                 "where f.user_id = ? " +
                 "union " +
                 "select u.* " +
                 "from confirmed_friend as f " +
-                "join users as u " +
+                "join \"USER\" as u " +
                 "on f.user_id = u.id " +
                 "where f.other_user_id = ? ";
 
-        return new HashSet<>(jdbcTemplate.query(
-                sql,
-                new Object[]{userId, userId},
-                new UserMapper())
+        return new HashSet<>(
+                jdbcTemplate.query(sql, new Object[]{userId, userId}, new UserMapper())
         );
     }
     @Override
@@ -94,13 +90,15 @@ public class FriendDbStorage implements FriendStorage{
                 "   where f1.user_id = ? " +
                 ") as other_user_friend " +
                 "on user_friend.user_id = other_user_friend.user_id " +
-                "join users as u " +
+                "join \"USER\" as u " +
                 "on u.id = user_friend.user_id";
 
-        return new HashSet<>(jdbcTemplate.query(
-                sql,
-                new Object[]{userId, userId, anotherUserId, anotherUserId},
-                new UserMapper())
+        return new HashSet<>(
+                jdbcTemplate.query(
+                    sql,
+                    new Object[]{userId, userId, anotherUserId, anotherUserId},
+                    new UserMapper()
+                )
         );
     }
     //update

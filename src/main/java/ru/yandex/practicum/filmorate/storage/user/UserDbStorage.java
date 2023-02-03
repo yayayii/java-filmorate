@@ -26,7 +26,7 @@ public class UserDbStorage implements UserStorage{
     public User addUser(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        String sql = "insert into users " +
+        String sql = "insert into \"USER\" " +
                 "(email, login, name, birthday) " +
                 "values (?, ?, ?, ?)";
 
@@ -47,7 +47,7 @@ public class UserDbStorage implements UserStorage{
     @Override
     public User getUser(int id) {
         String sql = "select * " +
-                "from users " +
+                "from \"USER\" " +
                 "where id = ?";
 
         return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
@@ -55,7 +55,7 @@ public class UserDbStorage implements UserStorage{
     @Override
     public Map<Integer, User> getUsers() {
         String sql = "select * " +
-                "from users";
+                "from \"USER\"";
 
         return jdbcTemplate.query(sql, new UserMapper()).
                 stream().collect(Collectors.toMap(User::getId, Function.identity()));
@@ -63,7 +63,7 @@ public class UserDbStorage implements UserStorage{
     //update
     @Override
     public User updateUser(User user) {
-        String sql = "update users " +
+        String sql = "update \"USER\" " +
                 "set email = ?, " +
                 "login = ?, " +
                 "name = ?, " +
@@ -79,10 +79,10 @@ public class UserDbStorage implements UserStorage{
     //delete
     @Override
     public void clearUserStorage() {
-        String sql = "delete from users";
+        String sql = "delete from \"USER\"";
         jdbcTemplate.update(sql);
 
-        sql = "alter table users " +
+        sql = "alter table \"USER\" " +
                 "alter column id " +
                 "restart with 1";
         jdbcTemplate.update(sql);

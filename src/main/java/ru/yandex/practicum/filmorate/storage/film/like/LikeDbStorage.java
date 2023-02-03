@@ -6,8 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.film.genre.GenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,8 +15,6 @@ import java.util.Set;
 @Component
 public class LikeDbStorage implements LikeStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final MpaDbStorage mpaStorage;
-    private final GenreDbStorage genreStorage;
 
     //create
     @Override
@@ -46,18 +42,20 @@ public class LikeDbStorage implements LikeStorage{
     }
     @Override
     public Set<Film> getPopularFilms(int count) {
-        String sql = "select f.*, group_concat(fg.genre_id) as genre_ids " +
+        String sql = "select f.*, m.name as mpa_name, group_concat(fg.genre_id) as genre_ids, group_concat(g.name) as genre_names " +
                 "from film as f " +
+                "join mpa as m " +
+                "on f.mpa_id = m.id " +
                 "left join film_genre as fg " +
                 "on f.id = fg.film_id " +
+                "left join genre as g " +
+                "on fg.genre_id = g.id " +
                 "group by f.id " +
                 "order by f.likes_count desc, f.id " +
                 "limit ?";
 
-        return new HashSet<>(jdbcTemplate.query(
-                sql,
-                new Object[]{count},
-                new FilmMapper(mpaStorage, genreStorage))
+        return new HashSet<>(
+                jdbcTemplate.query(sql, new Object[]{count}, new FilmMapper())
         );
     }
     //update

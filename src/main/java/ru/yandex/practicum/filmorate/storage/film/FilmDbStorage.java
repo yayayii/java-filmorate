@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.film.Film;
 import ru.yandex.practicum.filmorate.model.film.Genre;
 import ru.yandex.practicum.filmorate.model.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.film.genre.GenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.film.mpa.MpaDbStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -23,8 +21,6 @@ import java.util.stream.Collectors;
 @Component
 public class FilmDbStorage implements FilmStorage{
     private final JdbcTemplate jdbcTemplate;
-    private final MpaDbStorage mpaStorage;
-    private final GenreDbStorage genreStorage;
 
     //create
     @Override
@@ -59,24 +55,32 @@ public class FilmDbStorage implements FilmStorage{
     //read
     @Override
     public Film getFilm(int id) {
-        String sql = "select f.*, group_concat(fg.genre_id) as genre_ids " +
+        String sql = "select f.*, m.name as mpa_name, group_concat(fg.genre_id) as genre_ids, group_concat(g.name) as genre_names " +
                 "from film as f " +
+                "join mpa as m " +
+                "on f.mpa_id = m.id " +
                 "left join film_genre as fg " +
                 "on f.id = fg.film_id " +
+                "left join genre as g " +
+                "on fg.genre_id = g.id " +
                 "where f.id = ? " +
                 "group by f.id";
 
-        return jdbcTemplate.queryForObject(sql, new FilmMapper(mpaStorage, genreStorage), id);
+        return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
     }
     @Override
     public Map<Integer, Film> getFilms() {
-        String sql = "select f.*, group_concat(fg.genre_id) as genre_ids " +
-                "from film as f " +
-                "left join film_genre as fg " +
-                "on f.id = fg.film_id " +
-                "group by f.id";
+        String sql = "select f.*, m.name as mpa_name, group_concat(fg.genre_id) as genre_ids, group_concat(g.name) as genre_names " +
+        "from film as f " +
+        "join mpa as m " +
+        "on f.mpa_id = m.id " +
+        "left join film_genre as fg " +
+        "on f.id = fg.film_id " +
+        "left join genre as g " +
+        "on fg.genre_id = g.id " +
+        "group by f.id";
 
-        return jdbcTemplate.query(sql, new FilmMapper(mpaStorage, genreStorage)).
+        return jdbcTemplate.query(sql, new FilmMapper()).
                 stream().collect(Collectors.toMap(Film::getId, Function.identity()));
     }
     //update
