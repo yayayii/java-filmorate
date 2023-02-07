@@ -34,7 +34,6 @@ public class FilmController {
         filmValidator.validateFilmIds(id);
         return filmService.getFilm(id);
     }
-
     @GetMapping
     public Collection<Film> getFilms() {
         return filmService.getFilms().values();
@@ -66,7 +65,6 @@ public class FilmController {
         filmValidator.validateFilmIds(id);
         return filmService.getLikedUsersIds(id);
     }
-
     @GetMapping("/popular")
     public Set<Film> getPopularFilms(
             @RequestParam(defaultValue = "10", required = false) int count) {
