@@ -27,31 +27,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserDoesntExistException(final UserDoesntExistException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFilmDoesntExistException(final FilmDoesntExistException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleMpaDoesntExistException(final MpaDoesntExistsException e) {
-        return new ErrorResponse(
-                e.getMessage()
-        );
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleGenreDoesntExistException(final GenreDoesntExistsException e) {
+    public ErrorResponse handleUserDoesntExistException(final EntityDoesntExistException e) {
         return new ErrorResponse(
                 e.getMessage()
         );
@@ -61,7 +37,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         return new ErrorResponse(
-                "Произошла непредвиденная ошибка: " + e.getMessage()
+                "Произошла непредвиденная ошибка: " + e
         );
     }
 }

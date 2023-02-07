@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller;
+package ru.yandex.practicum.filmorate.controller.user;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +18,7 @@ import java.io.StringWriter;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -41,7 +42,7 @@ public class UserControllerTest {
     }
     @BeforeEach
     void beforeEach() {
-        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
     }
     @AfterEach
@@ -167,7 +168,7 @@ public class UserControllerTest {
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
-        user = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
@@ -175,10 +176,12 @@ public class UserControllerTest {
         putRequest(URN + "/1/friends/2");
 
         user.setFriendsIds(Set.of(2));
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/1").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
         user.setFriendsIds(Collections.emptySet());
-        assertEquals(user.getFriendsIds(), mapper.readValue(getRequest(URN+"/2").getContentAsString(), User.class).getFriendsIds());
+        actualSet = mapper.readValue(getRequest(URN + "/2/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(user.getFriendsIds(), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test
@@ -199,7 +202,7 @@ public class UserControllerTest {
         mapper.writeValue(writer, user);
         postRequest(URN, writer.toString());
 
-        User anotherUser = new User("email@qwe.ru", "login", "name", LocalDate.of(2000, 1, 1));
+        User anotherUser = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
         mapper.writeValue(writer, anotherUser);
         postRequest(URN, writer.toString());
@@ -232,11 +235,19 @@ public class UserControllerTest {
 
     @Test
     void shouldReturnSetWithMutualFriendsWhenGettingMutualFriendsFromUsersWithMutualFriends() throws Exception {
-        for (int i = 0; i < 3; i++) {
-            writer = new StringWriter();
-            mapper.writeValue(writer, user);
-            postRequest(URN, writer.toString());
-        }
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email3@qwe.ru", "login3", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
         user.setId(3);
         user.setFriendsIds(Set.of(1, 2));
 
@@ -263,20 +274,23 @@ public class UserControllerTest {
 
     @Test
     void shouldDeleteFriend() throws Exception {
-        for (int i = 0; i < 2; i++) {
-            mapper.writeValue(writer, user);
-            postRequest(URN, writer.toString());
-        }
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
+
+        user = new User("email2@qwe.ru", "login2", "name", LocalDate.of(2000, 1, 1));
+        writer = new StringWriter();
+        mapper.writeValue(writer, user);
+        postRequest(URN, writer.toString());
 
         putRequest(URN + "/1/friends/2");
 
-        assertEquals(Set.of(2),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
+        Set<User> actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Set.of(2), actualSet.stream().map(User::getId).collect(Collectors.toSet()));
 
         deleteRequest(URN + "/1/friends/2");
 
-        assertEquals(Collections.emptySet(),
-                mapper.readValue(getRequest(URN + "/1").getContentAsString(), User.class).getFriendsIds());
+        actualSet = mapper.readValue(getRequest(URN + "/1/friends").getContentAsString(), new TypeReference<>(){});
+        assertEquals(Collections.emptySet(),actualSet.stream().map(User::getId).collect(Collectors.toSet()));
     }
 
     @Test

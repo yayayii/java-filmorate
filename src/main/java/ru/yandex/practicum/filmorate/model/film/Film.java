@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.model.film;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,14 +25,8 @@ public class Film {
     @PositiveOrZero
     private int duration;
     private Mpa mpa;
-    private TreeSet<Genre> genres = new TreeSet<>(((o1, o2) -> {
-        if (o1.getId() < o2.getId()) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }));
-
+    private TreeSet<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
+    @JsonIgnore
     private Set<Integer> likedUsersIds = new HashSet<>();
 
     public Film() {
