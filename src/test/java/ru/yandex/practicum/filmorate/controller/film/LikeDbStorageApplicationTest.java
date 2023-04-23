@@ -28,11 +28,13 @@ public class LikeDbStorageApplicationTest {
     private final UserDbStorage userStorage;
     private final FilmDbStorage filmStorage;
 
+
     @AfterEach
     void afterEach() {
         userStorage.clearUserStorage();
         filmStorage.clearFilmStorage();
     }
+
 
     @Test
     public void testAddLikeAndGetLikedUsersIds() {

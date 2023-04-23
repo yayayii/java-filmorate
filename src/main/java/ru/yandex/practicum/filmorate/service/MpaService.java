@@ -11,14 +11,17 @@ import java.util.Map;
 public class MpaService {
     private final MpaStorage mpaStorage;
 
+
     //inMemoryMpaStorage / mpaDbStorage
     public MpaService(@Qualifier("mpaDbStorage") MpaStorage mpaStorage) {
         this.mpaStorage = mpaStorage;
     }
 
+
     public Mpa getMpa(int id) {
         return mpaStorage.getMpa(id);
     }
+
     public Map<Integer, Mpa> getMpas() {
         return mpaStorage.getMpas();
     }

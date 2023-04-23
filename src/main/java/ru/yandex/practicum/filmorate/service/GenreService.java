@@ -11,14 +11,17 @@ import java.util.Map;
 public class GenreService {
     private final GenreStorage genreStorage;
 
+
     //inMemoryGenreStorage / genreDbStorage
     public GenreService(@Qualifier("genreDbStorage") GenreStorage genreStorage) {
         this.genreStorage = genreStorage;
     }
 
+
     public Genre getGenre(int id) {
         return genreStorage.getGenre(id);
     }
+
     public Map<Integer, Genre> getGenres() {
         return genreStorage.getGenres();
     }

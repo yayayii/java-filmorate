@@ -20,11 +20,13 @@ public class MpaController {
     private final MpaValidator mpaValidator;
     private final MpaService mpaService;
 
+
     @GetMapping("/{id}")
     public Mpa getMpa(@PathVariable int id) {
         mpaValidator.validateMpaIds(id);
         return mpaService.getMpa(id);
     }
+
     @GetMapping
     public Collection<Mpa> getMpas() {
         return mpaService.getMpas().values();

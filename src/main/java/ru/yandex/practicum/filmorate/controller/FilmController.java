@@ -21,6 +21,7 @@ public class FilmController {
     private final FilmValidator filmValidator;
     private final UserValidator userValidator;
 
+
     //films
     //create
     @PostMapping
@@ -28,16 +29,19 @@ public class FilmController {
         filmValidator.validateFilmDate(film);
         return filmService.addFilm(film);
     }
+
     //read
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable int id) {
         filmValidator.validateFilmIds(id);
         return filmService.getFilm(id);
     }
+
     @GetMapping
     public Collection<Film> getFilms() {
         return filmService.getFilms().values();
     }
+
     //update
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
@@ -45,6 +49,7 @@ public class FilmController {
         filmValidator.validateFilmDate(film);
         return filmService.updateFilm(film);
     }
+
     //delete
     @DeleteMapping
     public void clearFilmStorage() {
@@ -59,12 +64,14 @@ public class FilmController {
         userValidator.validateUserIds(userId);
         filmService.addLike(id, userId);
     }
+
     //read
     @GetMapping("/{id}/like")
     public Set<Integer> getLikedUsersIds(@PathVariable int id) {
         filmValidator.validateFilmIds(id);
         return filmService.getLikedUsersIds(id);
     }
+
     @GetMapping("/popular")
     public Set<Film> getPopularFilms(
             @RequestParam(defaultValue = "10", required = false) int count) {
@@ -74,6 +81,7 @@ public class FilmController {
         }
         return filmService.getPopularFilms(count);
     }
+
     //update
     //delete
     @DeleteMapping("/{id}/like/{userId}")

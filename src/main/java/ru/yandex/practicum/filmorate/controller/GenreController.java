@@ -20,11 +20,13 @@ public class GenreController {
     private final GenreValidator genreValidator;
     private final GenreService genreService;
 
+
     @GetMapping("/{id}")
     public Genre getGenre(@PathVariable int id) {
         genreValidator.validateGenreIds(id);
         return genreService.getGenre(id);
     }
+
     @GetMapping
     public Collection<Genre> getGenres() {
         return genreService.getGenres().values();

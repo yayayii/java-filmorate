@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class FilmDbStorage implements FilmStorage{
     private final JdbcTemplate jdbcTemplate;
 
+
     //create
     @Override
     public Film addFilm(Film film) {
@@ -52,6 +53,7 @@ public class FilmDbStorage implements FilmStorage{
         log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
+
     //read
     @Override
     public Film getFilm(int id) {
@@ -68,6 +70,7 @@ public class FilmDbStorage implements FilmStorage{
 
         return jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
     }
+
     @Override
     public Map<Integer, Film> getFilms() {
         String sql = "select f.*, m.name as mpa_name, group_concat(fg.genre_id) as genre_ids, group_concat(g.name) as genre_names " +
@@ -83,6 +86,7 @@ public class FilmDbStorage implements FilmStorage{
         return jdbcTemplate.query(sql, new FilmMapper()).
                 stream().collect(Collectors.toMap(Film::getId, Function.identity()));
     }
+
     //update
     @Override
     public Film updateFilm(Film film) {
@@ -113,6 +117,7 @@ public class FilmDbStorage implements FilmStorage{
         log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
+
     //delete
     @Override
     public void clearFilmStorage() {
@@ -126,6 +131,4 @@ public class FilmDbStorage implements FilmStorage{
 
         log.info("Film storage was cleared.");
     }
-
-
 }

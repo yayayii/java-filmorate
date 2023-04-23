@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class InMemoryFriendStorage implements FriendStorage {
     private final InMemoryUserStorage userStorage;
 
+
     public InMemoryFriendStorage(InMemoryUserStorage userStorage) {
         this.userStorage = userStorage;
     }
+
 
     //create
     @Override
@@ -29,6 +31,7 @@ public class InMemoryFriendStorage implements FriendStorage {
             userStorage.getUser(friendId).getConfirmedFriendsIds().add(userId);
         }
     }
+
     //read
     @Override
     public Set<User> getFriends(int userId) {
@@ -38,6 +41,7 @@ public class InMemoryFriendStorage implements FriendStorage {
         sortedFriends.addAll(friends);
         return sortedFriends;
     }
+
     @Override
     public Set<User> getConfirmedFriends(int userId) {
         Set<User> friends = userStorage.getUser(userId).getConfirmedFriendsIds()
@@ -46,6 +50,7 @@ public class InMemoryFriendStorage implements FriendStorage {
         sortedFriends.addAll(friends);
         return sortedFriends;
     }
+
     @Override
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         Set<Integer> mutualFriends = new HashSet<>(userStorage.getUser(userId).getFriendsIds());
@@ -54,6 +59,7 @@ public class InMemoryFriendStorage implements FriendStorage {
         sortedMutualFriends.addAll(mutualFriends.stream().map(userStorage::getUser).collect(Collectors.toSet()));
         return sortedMutualFriends;
     }
+
     //update
     //delete
     @Override

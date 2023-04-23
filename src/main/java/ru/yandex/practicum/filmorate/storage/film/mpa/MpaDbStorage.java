@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class MpaDbStorage implements MpaStorage{
     private JdbcTemplate jdbcTemplate;
 
+
     @Override
     public Mpa getMpa(int id) {
         String sql = "select * " +

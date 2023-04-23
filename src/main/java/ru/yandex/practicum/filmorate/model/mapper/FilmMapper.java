@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class FilmMapper implements RowMapper<Film> {
-
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
         int id = rs.getInt("id");

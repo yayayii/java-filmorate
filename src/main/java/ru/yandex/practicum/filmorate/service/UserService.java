@@ -13,6 +13,7 @@ public class UserService {
     private final UserStorage userStorage;
     private final FriendStorage friendStorage;
 
+
     //inMemoryUserStorage / userDbStorage
     //inMemoryFriendStorage / friendDbStorage
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
@@ -21,22 +22,27 @@ public class UserService {
         this.friendStorage = friendStorage;
     }
 
+
     //user
     //create
     public User addUser(User user) {
         return userStorage.addUser(user);
     }
+
     //read
     public User getUser(int id) {
         return userStorage.getUser(id);
     }
+
     public Map<Integer, User> getUsers() {
         return userStorage.getUsers();
     }
+
     //update
     public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
+
     //delete
     public void clearUserStorage() {
         userStorage.clearUserStorage();
@@ -47,16 +53,20 @@ public class UserService {
     public void addFriend(int userId, int friendId) {
         friendStorage.addFriend(userId, friendId);
     }
+
     //read
     public Set<User> getFriends(int userId) {
         return friendStorage.getFriends(userId);
     }
+
     public Set<User> getConfirmedFriends(int userId) {
         return friendStorage.getConfirmedFriends(userId);
     }
+
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         return friendStorage.getCommonFriends(userId, anotherUserId);
     }
+
     //update
     //delete
     public void deleteFriend(int userId, int friendId) {

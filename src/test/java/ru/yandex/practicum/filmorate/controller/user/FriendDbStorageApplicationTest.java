@@ -22,10 +22,12 @@ public class FriendDbStorageApplicationTest {
     private final FriendDbStorage friendStorage;
     private final UserDbStorage userStorage;
 
+
     @AfterEach
     void afterEach() {
         userStorage.clearUserStorage();
     }
+
 
     @Test
     public void testAddAndGetFriends() {

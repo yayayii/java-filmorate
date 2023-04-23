@@ -15,8 +15,10 @@ public enum MpaInMemory {
     R(4, "R"),
     NC_17(5, "NC-17");
 
+
     private final int id;
     private final String name;
+
 
     @JsonCreator
     public static MpaInMemory forValues(int id) {

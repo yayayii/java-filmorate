@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class UserDbStorage implements UserStorage{
     private JdbcTemplate jdbcTemplate;
 
+
     //create
     @Override
     public User addUser(User user) {
@@ -43,6 +44,7 @@ public class UserDbStorage implements UserStorage{
         log.info("User \"" + user.getLogin() + "\" was added.");
         return user;
     }
+
     //read
     @Override
     public User getUser(int id) {
@@ -52,6 +54,7 @@ public class UserDbStorage implements UserStorage{
 
         return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
     }
+
     @Override
     public Map<Integer, User> getUsers() {
         String sql = "select * " +
@@ -60,6 +63,7 @@ public class UserDbStorage implements UserStorage{
         return jdbcTemplate.query(sql, new UserMapper()).
                 stream().collect(Collectors.toMap(User::getId, Function.identity()));
     }
+
     //update
     @Override
     public User updateUser(User user) {
@@ -76,6 +80,7 @@ public class UserDbStorage implements UserStorage{
         log.info("User \"" + user.getLogin() + "\" was updated.");
         return user;
     }
+
     //delete
     @Override
     public void clearUserStorage() {

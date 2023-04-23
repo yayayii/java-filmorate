@@ -6,5 +6,6 @@ import java.util.Map;
 
 public interface MpaStorage {
     Mpa getMpa(int id);
+
     Map<Integer, Mpa> getMpas();
 }

@@ -12,6 +12,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private static int id = 0;
     private final Map<Integer, Film> films = new HashMap<>();
 
+
     //create
     @Override
     public Film addFilm(Film film) {
@@ -22,6 +23,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Film \"" + film.getName() + "\" was added.");
         return film;
     }
+
     //read
     @Override
     public Film getFilm(int id) {
@@ -32,6 +34,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Map<Integer, Film> getFilms() {
         return films;
     }
+
     //update
     @Override
     public Film updateFilm(Film film) {
@@ -41,6 +44,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Film \"" + film.getName() + "\" was updated.");
         return film;
     }
+
     //delete
     @Override
     public void clearFilmStorage() {
@@ -49,11 +53,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Film storage was cleared.");
     }
 
-    //
+
     private void updateMpa(Film film) {
         MpaInMemory mpaInMemory = MpaInMemory.forValues(film.getMpa().getId());
         film.setMpa(new Mpa(mpaInMemory.getId(), mpaInMemory.getName()));
     }
+
     private void updateGenres(Film film) {
         TreeSet<Genre> genres = new TreeSet<>(Comparator.comparingInt(Genre::getId));
         for (Genre genre : film.getGenres()) {

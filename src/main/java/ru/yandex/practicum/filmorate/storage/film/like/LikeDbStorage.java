@@ -16,6 +16,7 @@ import java.util.Set;
 public class LikeDbStorage implements LikeStorage{
     private final JdbcTemplate jdbcTemplate;
 
+
     //create
     @Override
     public void addLike(int filmId, int userId) {
@@ -29,6 +30,7 @@ public class LikeDbStorage implements LikeStorage{
                 "where id = ?";
         jdbcTemplate.update(sql, filmId);
     }
+
     //read
     @Override
     public Set<Integer> getLikedUsersIds(int filmId) {
@@ -40,6 +42,7 @@ public class LikeDbStorage implements LikeStorage{
                 jdbcTemplate.queryForList(sql, Integer.class, filmId)
         );
     }
+
     @Override
     public Set<Film> getPopularFilms(int count) {
         String sql = "select f.*, m.name as mpa_name, group_concat(fg.genre_id) as genre_ids, group_concat(g.name) as genre_names " +
@@ -58,6 +61,7 @@ public class LikeDbStorage implements LikeStorage{
                 jdbcTemplate.query(sql, new Object[]{count}, new FilmMapper())
         );
     }
+
     //update
     //delete
     @Override

@@ -13,10 +13,12 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 public class UserValidator {
     private final UserStorage userStorage;
 
+
     //inMemoryUserStorage / userDbStorage
     public UserValidator(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
+
 
     public void validateUserIds(int... ids) {
         for (int id : ids) {

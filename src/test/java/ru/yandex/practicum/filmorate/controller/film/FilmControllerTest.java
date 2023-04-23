@@ -39,21 +39,25 @@ public class FilmControllerTest {
     @Autowired
     private MockMvc mvc;
 
+
     @BeforeAll
     static void beforeAll() {
         mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
     }
+
     @BeforeEach
     void beforeEach() {
         writer = new StringWriter();
         film = new Film("Name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
     }
+
     @AfterEach
     void afterEach() throws Exception {
         deleteRequest(URN);
         deleteRequest("/users");
     }
+
 
     //storage
     //GET
@@ -324,29 +328,34 @@ public class FilmControllerTest {
         assertEquals(writer.toString(), getRequest("/genres").getContentAsString(StandardCharsets.UTF_8));
     }
 
+
     //sending requests
     private MockHttpServletResponse getRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get(urn);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse postRequest(String urn, String content) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.post(urn).
                 contentType(MediaType.APPLICATION_JSON).content(content);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse putRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.put(urn);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse putRequest(String urn, String content) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.put(urn).
                 contentType(MediaType.APPLICATION_JSON).content(content);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse deleteRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.delete(urn);
         MvcResult result = mvc.perform(request).andReturn();

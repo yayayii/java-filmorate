@@ -16,8 +16,10 @@ public enum GenreInMemory {
     DOCUMENTARY(5, "Документальный"),
     ACTION(6, "Боевик");
 
+
     private final int id;
     private final String name;
+
 
     @JsonCreator
     public static GenreInMemory forValues(int id) {

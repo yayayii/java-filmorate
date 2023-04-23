@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class GenreDbStorage implements GenreStorage{
     private final JdbcTemplate jdbcTemplate;
 
+
     @Override
     public Genre getGenre(int id) {
         String sql = "select * " +

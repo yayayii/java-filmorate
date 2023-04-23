@@ -29,6 +29,7 @@ public class Film {
     @JsonIgnore
     private Set<Integer> likedUsersIds = new HashSet<>();
 
+
     public Film() {
     }
 
@@ -50,6 +51,7 @@ public class Film {
         this.mpa = mpa;
         this.genres.addAll(genres);
     }
+
 
     @Override
     public boolean equals(Object o) {

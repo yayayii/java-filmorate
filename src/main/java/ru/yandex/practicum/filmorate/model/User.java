@@ -25,6 +25,7 @@ public class User {
     @JsonIgnore
     private Set<Integer> confirmedFriendsIds = new HashSet<>();
 
+
     public User() {
     }
 
@@ -42,6 +43,7 @@ public class User {
         this.name = name;
         this.birthday = birthday;
     }
+
 
     @Override
     public boolean equals(Object o) {

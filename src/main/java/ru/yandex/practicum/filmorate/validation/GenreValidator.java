@@ -11,10 +11,12 @@ import ru.yandex.practicum.filmorate.storage.film.genre.GenreStorage;
 public class GenreValidator {
     private final GenreStorage genreStorage;
 
+
     //inMemoryGenreStorage / genreDbStorage
     public GenreValidator(@Qualifier("genreDbStorage") GenreStorage genreStorage) {
         this.genreStorage = genreStorage;
     }
+
 
     public void validateGenreIds(int... ids) {
         for (int id : ids) {

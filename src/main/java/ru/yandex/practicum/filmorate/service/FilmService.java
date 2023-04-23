@@ -14,6 +14,7 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final LikeStorage likeStorage;
 
+
     //inMemoryFilmStorage / filmDbStorage
     //inMemoryLikeStorage / likeDbStorage
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
@@ -22,22 +23,27 @@ public class FilmService {
         this.likeStorage = likeStorage;
     }
 
+
     //films
     //create
     public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
+
     //read
     public Film getFilm(int id) {
         return filmStorage.getFilm(id);
     }
+
     public Map<Integer, Film> getFilms() {
         return filmStorage.getFilms();
     }
+
     //update
     public Film updateFilm(Film film) {
         return filmStorage.updateFilm(film);
     }
+
     //delete
     public void clearFilmStorage() {
         filmStorage.clearFilmStorage();
@@ -48,13 +54,16 @@ public class FilmService {
     public void addLike(int filmId, int userId) {
         likeStorage.addLike(filmId, userId);
     }
+
     //read
     public Set<Integer> getLikedUsersIds(int filmId) {
         return likeStorage.getLikedUsersIds(filmId);
     }
+
     public Set<Film> getPopularFilms(int count) {
         return likeStorage.getPopularFilms(count);
     }
+
     //update
     //delete
     public void removeLike(int filmId, int userId) {

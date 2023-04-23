@@ -26,6 +26,7 @@ public class FilmDbStorageApplicationTest {
 
     private Film film;
 
+
     @BeforeEach
     void beforeEach() {
         film = new Film("name", "Description", LocalDate.of(2000, 1, 1), 120, new Mpa(1, "G"), Set.of(new Genre(1, "Комедия")));
@@ -35,6 +36,7 @@ public class FilmDbStorageApplicationTest {
     void afterEach() {
         filmStorage.clearFilmStorage();
     }
+
 
     @Test
     public void testAddAndGetFilm() {

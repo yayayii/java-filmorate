@@ -35,21 +35,25 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
+
     @BeforeAll
     static void beforeAll() {
         mapper = new ObjectMapper();
         mapper.findAndRegisterModules();
     }
+
     @BeforeEach
     void beforeEach() {
         user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
         writer = new StringWriter();
     }
+
     @AfterEach
     void afterEach() throws Exception {
         deleteRequest(URN);
         deleteRequest("/films");
     }
+
 
     //storage
     //GET
@@ -306,29 +310,34 @@ public class UserControllerTest {
         assertEquals(404, deleteRequest(URN + "/1/friends/2").getStatus());
     }
 
+
     //sending requests
     private MockHttpServletResponse getRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.get(urn);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse postRequest(String urn, String user) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.post(urn).
                 contentType(MediaType.APPLICATION_JSON).content(user);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse putRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.put(urn);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse putRequest(String urn, String user) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.put(urn).
                 contentType(MediaType.APPLICATION_JSON).content(user);
         MvcResult result = mvc.perform(request).andReturn();
         return result.getResponse();
     }
+
     private MockHttpServletResponse deleteRequest(String urn) throws Exception {
         RequestBuilder request = MockMvcRequestBuilders.delete(urn);
         MvcResult result = mvc.perform(request).andReturn();

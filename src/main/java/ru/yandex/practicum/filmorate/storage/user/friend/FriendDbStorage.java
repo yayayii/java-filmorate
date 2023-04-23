@@ -14,6 +14,7 @@ import java.util.Set;
 public class FriendDbStorage implements FriendStorage{
     private final JdbcTemplate jdbcTemplate;
 
+
     //create
     @Override
     public void addFriend(int userId, int friendId) {
@@ -37,6 +38,7 @@ public class FriendDbStorage implements FriendStorage{
             jdbcTemplate.update(sql, friendId, userId, userId, friendId, friendId, userId);
         }
     }
+
     //read
     @Override
     public Set<User> getFriends(int userId) {
@@ -50,6 +52,7 @@ public class FriendDbStorage implements FriendStorage{
                 jdbcTemplate.query(sql, new Object[]{userId}, new UserMapper())
         );
     }
+
     @Override
     public Set<User> getConfirmedFriends(int userId) {
         String sql = "select u.* " +
@@ -68,6 +71,7 @@ public class FriendDbStorage implements FriendStorage{
                 jdbcTemplate.query(sql, new Object[]{userId, userId}, new UserMapper())
         );
     }
+
     @Override
     public Set<User> getCommonFriends(int userId, int anotherUserId) {
         String sql = "select u.* " +
@@ -101,6 +105,7 @@ public class FriendDbStorage implements FriendStorage{
                 )
         );
     }
+
     //update
     //delete
     @Override

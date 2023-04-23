@@ -22,6 +22,7 @@ public class UserDbStorageApplicationTest {
 
     private User user;
 
+
     @BeforeEach
     void beforeEach() {
         user = new User("email1@qwe.ru", "login1", "name", LocalDate.of(2000, 1, 1));
@@ -31,6 +32,7 @@ public class UserDbStorageApplicationTest {
     void afterEach() {
         userStorage.clearUserStorage();
     }
+
 
     @Test
     public void testAddAndGetUser() {

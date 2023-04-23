@@ -11,10 +11,12 @@ import ru.yandex.practicum.filmorate.storage.film.mpa.MpaStorage;
 public class MpaValidator {
     private final MpaStorage mpaStorage;
 
+
     //inMemoryMpaStorage / mpaDbStorage
     public MpaValidator(@Qualifier("mpaDbStorage") MpaStorage mpaStorage) {
         this.mpaStorage = mpaStorage;
     }
+
 
     public void validateMpaIds(int... ids) {
         for (int id : ids) {
